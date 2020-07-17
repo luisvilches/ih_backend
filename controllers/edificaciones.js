@@ -1,17 +1,20 @@
 const Edificaciones = require('../models/edificaciones')
 
-exports.nuevo = (req, res) => {
+exports.nuevo = async (req, res) => {
     const { body, files } = req;
     const edificacion = new Edificaciones({
         edificacion: body.edificacion,
         name: body.name,
+        proyecto: body.proyecto,
         region: body.region,
         comuna: body.comuna,
         direccion: body.direccion,
         lote: body.lote,
         company: body.company,
-        docs: req.tools.fileupload(files.docs),
-        others: req.tools.fileupload(files.others),
+        pisos: body.pisos,
+        viviendad: body.viviendas,
+        docs: await req.tools.fileupload(files.docs),
+        others: await req.tools.fileupload(files.others),
     })
 
     edificacion.save()
@@ -37,6 +40,12 @@ exports.findById = (req, res) => {
         .catch(err => res.status(500).json({ success: false, err: err }))
 }
 
+exports.findByNameProject = (req, res) => {
+    Edificaciones.find({ proyecto: req.params.project })
+        .then(response => res.status(200).json({ success: true, data: response }))
+        .catch(err => res.status(500).json({ success: false, err: err }))
+}
+
 exports.update = (req, res) => {
     const { body } = req;
     Edificaciones.findById({ _id: req.params.id })
@@ -44,11 +53,14 @@ exports.update = (req, res) => {
             doc = {
                 edificacion: body.edificacion,
                 name: body.name,
+                proyecto: body.proyecto,
                 region: body.region,
                 comuna: body.comuna,
                 direccion: body.direccion,
                 lote: body.lote,
                 company: body.company,
+                pisos: body.pisos,
+                viviendad: body.viviendas,
                 docs: body.docs,
                 others: body.others
             }

@@ -6,6 +6,7 @@ router.get('/', (req,res) => {
     res.send('Hola mundo');
 })
 
+router.get('/companys',ctrl.companys.all)
 
 router.get('/users', ctrl.user.all)
 router.get('/users/:id', ctrl.user.findById)
@@ -24,5 +25,6 @@ router.get('/edifications/:id', ctrl.edificaciones.findById)
 router.post('/edifications', ctrl.edificaciones.nuevo)
 router.delete('/edifications/:id', ctrl.edificaciones.delete)
 router.put('/edifications/:id', ctrl.edificaciones.update)
+router.get('/edification/project/:project',ctrl.edificaciones.findByNameProject)
 
 module.exports = router;

@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 
 function uploadFile(obj, name, folder, req) {
+
     let date = new Date();
     let nombre_nuevo = name + date.getDate() + date.getSeconds() + date.getMilliseconds() + "_file";
     let ruta_archivo = obj.path;
@@ -10,7 +11,7 @@ function uploadFile(obj, name, folder, req) {
     fs.createReadStream(ruta_archivo).pipe(fs.createWriteStream(nueva_ruta));
     return {
         name: nombre_imagen,
-        url: req.hostname + '/' + nombre_imagen
+        url: req.headers.host + '/' + nombre_imagen
     };
 }
 
@@ -22,6 +23,7 @@ const multipleUploadFile = (files, folder, req) => {
                 for (let i = 0; i < files.length; i++) {
                     let file = uploadFile(files[i], files[i].name, folder, req)
                     data.push(file);
+                    console.log(file);
                     if (i == files.length - 1) resolve(data);
                 }
             } else {

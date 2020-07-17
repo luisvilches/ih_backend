@@ -11,6 +11,8 @@ const Edificacion = new Schema({
     proyecto: { type: String },
     lote: { type: String },
     company: { type: String },
+    pisos: { type: String },
+    viviendad: { type: String },
     docs: [
         {
             name: { type: String },
