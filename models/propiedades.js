@@ -13,7 +13,8 @@ const Propiedad = new Schema({
     calle: { type: String },
     numero: { type: String },
     escritura:[],
-    incripcion:[]
+    incripcion:[],
+    estado:{type:String}
 });
 
 Propiedad.plugin(timestamps);

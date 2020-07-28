@@ -9,9 +9,29 @@ const User = new Schema({
     email: { type: String },
     phone: { type: String },
     password: { type: String },
-    role: { type: String }
+    role: { type: String },
+    username: { type: String, default: "" },
+    client: { type: Boolean, default: false },
+    roleOptions:{},
+    calendar:[
+        {
+            date:String,
+            month:String,
+            year:String,
+            day:String,
+            hours:[
+                {
+                    hour:String,
+                    clientId:String,
+                    client:Object,
+                    estado:String
+                }
+            ]
+        }
+    ],
+
 });
 
 User.plugin(timestamps);
 
-module.exports = mongoose.model('User',User);
+module.exports = mongoose.model('User', User);
