@@ -8,6 +8,7 @@ const mongoose = require('mongoose')
 const path = require('path')
 const utils = require('./utils');
 const { env } = require('process')
+const auth = require('./middlewares/auth');
 
 // promesa formidable
 const promiseForm = (req) => {
@@ -33,10 +34,8 @@ app.use(cors());
 app.use(middleFiles)
 app.use(express.static(path.join(path.resolve(), 'public')));
 
-
 app.use('/', require('./routes/public'));
-// app.use('/', auth, require('./routes/private'));
-
+app.use('/api', auth, require('./routes/private'));
 
 // CONEXION DB
 mongoose.connect('mongodb://inspector:inspector2020@ds155961.mlab.com:55961/inspector_hogar', err => {
