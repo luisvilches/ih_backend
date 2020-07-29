@@ -7,6 +7,7 @@ const formidable = require('formidable')
 const mongoose = require('mongoose')
 const path = require('path')
 const utils = require('./utils');
+const { env } = require('process')
 
 // promesa formidable
 const promiseForm = (req) => {
@@ -44,7 +45,7 @@ mongoose.connect('mongodb://inspector:inspector2020@ds155961.mlab.com:55961/insp
 })
 
 // SERVER
-server.listen(8000, err => err ? console.log(err) : console.log("server running in port " + 12001));
+server.listen(process.env.PORT || 5000, err => err ? console.log(err) : console.log("server running in port " + 12001));
 
 // export socket.io
 exports.io = io;
