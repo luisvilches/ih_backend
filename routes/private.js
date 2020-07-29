@@ -42,4 +42,10 @@ router.delete('/plantas/:id', ctrl.plantas.delete)
 router.put('/plantas/:id', ctrl.plantas.update)
 
 
+router.get('/validtoken', (req,res) => {
+    console.log('eeee')
+    res.json({valid:true})
+})
+
+
 module.exports = router;
