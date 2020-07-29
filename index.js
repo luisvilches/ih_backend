@@ -44,7 +44,7 @@ mongoose.connect('mongodb://inspector:inspector2020@ds155961.mlab.com:55961/insp
 })
 
 // SERVER
-server.listen(12001, err => err ? console.log(err) : console.log("server running in port " + 12001));
+server.listen(8000, err => err ? console.log(err) : console.log("server running in port " + 12001));
 
 // export socket.io
 exports.io = io;

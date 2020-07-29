@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const ctrl = require('../controllers');
 
+router.get('/', (req,res) => res.json({message:"Hola Mundo"}))
+
 router.get('/companys',ctrl.companys.all)
 router.get('/regions',ctrl.regions.regions)
 
