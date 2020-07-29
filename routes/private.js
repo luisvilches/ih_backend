@@ -35,11 +35,11 @@ router.delete('/edifications/:id', ctrl.edificaciones.delete)
 router.put('/edifications/:id', ctrl.edificaciones.update)
 router.get('/edification/project/:project',ctrl.edificaciones.findByNameProject)
 
-router.get('/plantas', ctrl.edificaciones.all)
-router.get('/plantas/:id', ctrl.edificaciones.findById)
-router.post('/plantas', ctrl.edificaciones.nuevo)
-router.delete('/plantas/:id', ctrl.edificaciones.delete)
-router.put('/plantas/:id', ctrl.edificaciones.update)
+router.get('/plantas', ctrl.plantas.all)
+router.get('/plantas/:id', ctrl.plantas.findById)
+router.post('/plantas', ctrl.plantas.nuevo)
+router.delete('/plantas/:id', ctrl.plantas.delete)
+router.put('/plantas/:id', ctrl.plantas.update)
 
 
 module.exports = router;

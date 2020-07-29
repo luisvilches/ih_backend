@@ -2,13 +2,13 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const server = require('http').createServer(app)
-const io = require('socket.io').listen(server,{ origins: '*:*'})
+const io = require('socket.io').listen(server, { origins: '*:*' })
 const formidable = require('formidable')
 const mongoose = require('mongoose')
 const path = require('path')
 const utils = require('./utils');
 const { env } = require('process')
-const auth = require('./middlewares/auth');
+const { auth } = require('./middlewares/auth');
 
 // promesa formidable
 const promiseForm = (req) => {
@@ -39,7 +39,7 @@ app.use('/api', auth, require('./routes/private'));
 
 // CONEXION DB
 mongoose.connect('mongodb://inspector:inspector2020@ds155961.mlab.com:55961/inspector_hogar', err => {
-    if(err) console.log(err);
+    if (err) console.log(err);
     else console.log('open db');
 })
 
