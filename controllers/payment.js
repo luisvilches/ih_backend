@@ -9,16 +9,16 @@ const config = {
     "apiKey": "6716E8F4-3097-420C-B1FC-1LC5760380DB",
     "secretKey": "1a51ca81b8174e08ee3e1e9d63c8d3802f7984c7",
     "apiURL": "https://sandbox.flow.cl/api",
-    "baseURL": "http://localhost:5000",
-    "site": "http://localhost:8080"
+    "baseURL": "https://bukitech-ih.herokuapp.com",
+    "site": "https://ih-socialventis.netlify.app"
 }
 
 function getStatus(status) {
     switch (status) {
         case 1: return '/pendingpay';
         case 2: return '/pago-usuario';
-        case 3: return '/rejectedpay';
-        case 4: return '/nullpay';
+        case 3: return '/err';
+        case 4: return '/err';
     }
 }
 
