@@ -8,7 +8,7 @@ const Proyecto = new Schema({
     region: { type: String },
     comuna: { type: String },
     direccion: { type: String },
-    lote: { type: String }
+    lote: { type: String },
 });
 
 Proyecto.plugin(timestamps);

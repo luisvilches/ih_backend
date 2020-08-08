@@ -5,6 +5,10 @@ exports.nuevo = async (req, res) => {
     const edificacion = new Plantas({
         proyecto: body.proyecto,
         idProyecto: body.idProyecto,
+        company: body.company,
+        region: body.region,
+        comuna: body.comuna,
+        edificacion: body.edificacion,
         edificio: body.edificio,
         idedificio: body.idedificio,
         num_planta: body.num_planta,
@@ -14,10 +18,7 @@ exports.nuevo = async (req, res) => {
         m2: body.m2,
         tipologia: body.tipologia,
         plano: await req.tools.fileupload(files.plano),
-        habitaciones: JSON.parse(body.habitaciones),
-        elementos: JSON.parse(body.elementos),
-        tipos_de_elementos: JSON.parse(body.tipos_de_elementos),
-        preguntas: JSON.parse(body.preguntas)
+        habitaciones: JSON.parse(body.habitaciones)
     })
 
     edificacion.save()
@@ -25,9 +26,16 @@ exports.nuevo = async (req, res) => {
         .catch(err => res.status(500).json({ success: false, err: err }))
 }
 
+exports.findForm = (req, res) => {
+    const { params } = req;
+    Plantas.find({ idProyecto: params.proyecto, idedificio: params.edificacion })
+        .then(async response => res.status(200).json({ success: true, data: response }))
+        .catch(err => res.status(500).json({ success: false, err: err }))
+}
+
 exports.all = (req, res) => {
     Plantas.find({})
-        .then(response => res.status(200).json({ success: true, data: response }))
+        .then(async response => res.status(200).json({ success: true, data: response }))
         .catch(err => res.status(500).json({ success: false, err: err }))
 }
 
@@ -65,9 +73,6 @@ exports.update = (req, res) => {
             doc['tipologia'] = body.tipologia
             // doc['plano'] = JSON.parse(body.old_docs).concat(await req.tools.fileupload(files.docs));
             doc['habitaciones'] = JSON.parse(body.habitaciones)
-            doc['elementos'] = JSON.parse(body.elementos)
-            doc['tipos_de_elementos'] = JSON.parse(body.tipos_de_elementos)
-            doc['preguntas'] = JSON.parse(body.preguntas)
 
             doc.save()
                 .then(response => res.status(200).json({ success: true, data: response }))

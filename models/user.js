@@ -3,6 +3,7 @@ const timestamps = require('mongoose-timestamp');
 const Schema = mongoose.Schema;
 
 const User = new Schema({
+    verification:{type:Boolean, default:false},
     name: { type: String },
     lastname: { type: String },
     rut: { type: String },
@@ -24,6 +25,7 @@ const User = new Schema({
                     hour:String,
                     clientId:String,
                     client:Object,
+                    propiedad:Object,
                     estado:String
                 }
             ]

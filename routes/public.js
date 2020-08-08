@@ -12,4 +12,9 @@ router.get('/projects', ctrl.proyectos.all)
 router.get('/edifications', ctrl.edificaciones.all)
 router.get('/edification/project/:project',ctrl.edificaciones.findByNameProject)
 
+router.get('/plantas/:proyecto/:edificacion',ctrl.plantas.findForm)
+
+router.post('/apiFlow/payment_confirm', ctrl.payment.confirm)
+router.post('/apiFlow/pay', ctrl.payment.pay)
+
 module.exports = router;

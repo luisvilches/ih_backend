@@ -1,3 +1,43 @@
-exports.all = (req,res) => {
-    res.status(200).json({success:true,data:[{name:"prueba"},{name:"test"}]});
+exports.all = (req, res) => {
+    res.status(200).json({
+        success: true, data: [
+            { name: "Inmobiliaria Absal" }, 
+            { name: "Inmobiliaria Alborada" },
+            { name: "Inmobiliaria Armas" },
+            { name: "Inmobiliaria avellaneda" },
+            { name: "Inmobiliaria Convet" },
+            { name: "Inmobiliaria Deisa" },
+            { name: "Inmobiliaria Desco" },
+            { name: "Inmobiliaria Devisa" },
+            { name: "Inmobiliaria Diego de Almagro" },
+            { name: "Inmobiliaria Ecomac" },
+            { name: "Inmobiliaria Enaco" },
+            { name: "Inmobiliaria Espacios" },
+            { name: "Inmobiliaria Faur" },
+            { name: "Inmobiliaria FG" },
+            { name: "Inmobiliaria fundamenta" },
+            { name: "Inmobiliaria iaconcagua" },
+            { name: "Inmobiliaria Imagina" },
+            { name: "Inmobiliaria Inca" },
+            { name: "Inmobiliaria Inmobilia" },
+            { name: "InmobiliariaLos silos" },
+            { name: "Inmobiliaria Madesal" },
+            { name: "Inmobiliaria Magua" }, 
+            { name: "Inmobiliaria Manquehue" },
+            { name: "Inmobiliaria Noval" },
+            { name: "Inmobiliaria Numancia" },
+            { name: "Inmobiliaria Pabellón" },
+            { name: "Inmobiliaria Paz" },
+            { name: "Inmobiliaria Pilares" },
+            { name: "Inmobiliaria Pocuro" },
+            { name: "Inmobiliaria Property link" },
+            { name: "Inmobiliaria PY" },
+            { name: "Inmobiliaria RVC" },
+            { name: "Inmobiliaria Santolaya" },
+            { name: "Inmobiliaria Sinergia" },
+            { name: "Inmobiliaria Socovesa" },
+            { name: "Inmobiliaria Stitchkin" },
+            { name: "Inmobiliaria Terracorp" }
+        ]
+    });
 }

@@ -5,6 +5,10 @@ const Schema = mongoose.Schema;
 const Planta = new Schema({
     proyecto: { type: String },
     idProyecto: { type: String },
+    company:{type:String},
+    region:{type:String},
+    comuna:{type:String},
+    edificacion:{type:String},
     edificio: { type: String },
     idedificio: { type: String },
     num_planta: { type: String },
@@ -15,9 +19,6 @@ const Planta = new Schema({
     tipologia: { type: String },
     plano: {},
     habitaciones: [],
-    elementos: [],
-    tipos_de_elementos: [],
-    preguntas: []
 });
 
 Planta.plugin(timestamps);

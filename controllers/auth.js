@@ -2,7 +2,7 @@ const User = require('../models/user');
 const { createTokens } = require('../utils/createToken');
 
 exports.auth =  (req, res) => {
-    User.findOne({email: req.body.email},(err, user) => {
+    User.findOne({email: req.body.email,verification:true},(err, user) => {
         if (err) throw err;
 
         if (!user) {
