@@ -41,7 +41,7 @@ exports.confirm = async (req, res) => {
                     tipo: 'premium',
                     date: response.paymentData.date,
                     propiedad: propiedad,
-                    client: cliente,
+                    client: mongoose.Types.ObjectId(cliente._id),
                     estado: "pagado"
                 })
 

@@ -56,6 +56,31 @@ exports.byClient = (req, res) => {
         .catch(err => res.status(500).json({ success: false, err: err }))
 }
 
+
+exports.ddd = (req, res) => {
+    User.aggregate([
+        {$match : { client : true } },
+        {   
+            $lookup: {
+                from: Inspecciones.collection.name,
+                localField: "_id",
+                foreignField: "client",
+                as: "inspecciones"
+            }
+        },
+        {
+            $lookup: {
+                from: Propiedades.collection.name,
+                localField: "_id",
+                foreignField: "id_user",
+                as: "propiedades"
+            }
+        },
+    ])
+        .then(response => {console.log(response);res.status(200).json({ success: true, data: response })})
+        .catch(err => res.status(500).json({ success: false, err: err }))
+}
+
 exports.changeStatus = (req, res) => {
     Propiedades.findById({ _id: req.params.id })
         .then(doc => {

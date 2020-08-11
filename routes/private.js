@@ -56,6 +56,8 @@ router.post('/pdf/inspeccion', ctrl.inspecciones.generatePdf)
 
 router.get('/clients', ctrl.propiedades.byClient)
 
+router.get('/clientes',ctrl.propiedades.ddd)
+
 
 router.get('/validtoken', (req,res) => {
     console.log('eeee')

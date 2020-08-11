@@ -88,7 +88,7 @@ exports.activarUsuario = (req, res) => {
                 .then(response => res.status(200).json({ success: true, data: response }))
                 .catch(err => res.status(500).json({ success: false, err: err }))
         })
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
 }
 
 exports.trabajador = (req, res) => {
@@ -103,7 +103,8 @@ exports.trabajador = (req, res) => {
         username: body.username,
         role: body.job,
         roleOptions: {},
-        calendar: []
+        calendar: [],
+        verification:true
     })
 
     user.save()
@@ -186,7 +187,8 @@ exports.inspector = (req, res) => {
         username: body.username,
         role: body.job,
         roleOptions: {},
-        calendar: []
+        calendar: [],
+        verification:true
     })
 
     user.save()
