@@ -13,6 +13,7 @@ const settings = require('./settings');
 const { db } = settings;
 exports.settings = settings;
 
+app.use(cors());
 // promesa formidable
 const promiseForm = (req) => {
     const form = formidable({ multiples: true });
@@ -33,7 +34,7 @@ async function middleFiles(req, res, next) {
 }
 
 app.use(utils);
-app.use(cors());
+
 app.use(middleFiles)
 app.use(express.static(path.join(path.resolve(), 'public')));
 
