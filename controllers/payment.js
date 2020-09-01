@@ -9,7 +9,7 @@ const config = {
     "apiKey": "6716E8F4-3097-420C-B1FC-1LC5760380DB",
     "secretKey": "1a51ca81b8174e08ee3e1e9d63c8d3802f7984c7",
     "apiURL": "https://sandbox.flow.cl/api",
-    "baseURL": "https://bukitech-ih.herokuapp.com",
+    "baseURL":  "https://bukitech-ih.herokuapp.com", //"http://localhost:5000",
     "site": "https://ih-socialventis.netlify.app"
 }
 
@@ -34,14 +34,13 @@ exports.confirm = async (req, res) => {
 
         Payments.findOne({ flowOrder: response.flowOrder })
             .then(async ress => {
-
-                let cliente = await Propiedades.findById({ _id: ress.idCliente });
+                // let cliente = await Propiedades.findById({ _id: ress.idCliente });
                 let propiedad = await Propiedades.findById({ _id: ress.idPropiedad })
                 let inspeccion = new Inpeccion({
                     tipo: 'premium',
                     date: response.paymentData.date,
                     propiedad: propiedad,
-                    client: mongoose.Types.ObjectId(cliente._id),
+                    client: mongoose.Types.ObjectId(ress.idCliente),
                     estado: "pagado"
                 })
 

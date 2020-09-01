@@ -3,7 +3,7 @@ const timestamps = require('mongoose-timestamp');
 const Schema = mongoose.Schema;
 
 const Propiedad = new Schema({
-    id_user: {type:Schema.Types.ObjectId},
+    id_user: { type: Schema.Types.ObjectId },
     region: { type: String },
     comuna: { type: String },
     proyecto: { type: String },
@@ -12,14 +12,15 @@ const Propiedad = new Schema({
     lote: { type: String },
     calle: { type: String },
     numero: { type: String },
-    escritura:[],
-    incripcion:[],
-    estado:{type:String,default:'init'},
-    idPlanta:{type:String},
-    recepcion_municiapal:{type:String,default:"-"},
-    inspeccion_actual:{type:Schema.Types.ObjectId}
+    escritura: [],
+    incripcion: [],
+    estado: { type: String, default: 'init' },
+    idPlanta: { type: String },
+    recepcion_municiapal: { type: String, default: "-" },
+    inspeccion_actual: { type: Schema.Types.ObjectId },
+    fecha_entrega: { type: String, default: '' }
 });
 
 Propiedad.plugin(timestamps);
 
-module.exports = mongoose.model('Propiedad',Propiedad);
+module.exports = mongoose.model('Propiedad', Propiedad);

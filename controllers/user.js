@@ -2,7 +2,8 @@ const User = require('../models/user')
 const Propiedades = require('../models/propiedades')
 const Inpeccion = require('../models/inpecciones');
 const mongoose = require('mongoose');
-const { response } = require('express');
+const email = require('../utils/sendMail');
+
 
 const meses = [
     "Enero",
@@ -23,72 +24,115 @@ exports.setPassword = (req, res) => {
     const { body } = req;
     User.findById({ _id: body.id })
         .then(response => {
-            response['password'] = body.password;
-
-            response.save()
-                .then(prod => console.log(prod))
-                .catch(err => res.status(500).json({ success: false, err: err }))
-        })
-        .catch(err => res.status(500).json({ success: false, err: err }))
-}
-
-exports.client = (req, res) => {
-    const { body } = req;
-    const user = new User({
-        name: body.name,
-        lastname: body.lastname,
-        rut: body.rut,
-        email: body.email,
-        phone: body.phone,
-        password: body.password,
-        role: 'user',
-        client: true,
-        roleOptions: {},
-        calendar: []
-    })
-
-    user.save()
-        .then(async response => {
-            const prop = JSON.parse(body.propiedades);
-            var i = 0;
-            while (i < prop.length) {
-                let propiedad = new Propiedades({
-                    id_user: mongoose.Types.ObjectId(response._id),
-                    region: prop[i].region,
-                    comuna: prop[i].comuna,
-                    proyecto: prop[i].proyecto,
-                    edificacion: prop[i].edificacion,
-                    tipo: prop[i].tipo,
-                    lote: prop[i].lote,
-                    calle: prop[i].calle,
-                    numero: prop[i].numero,
-                    idPlanta: prop[i].idPlanta,
-                    escritura: await req.tools.fileupload(req.files['escritura' + i]),
-                    incripcion: await req.tools.fileupload(req.files['inscripcion' + i]),
-                })
-
-
-                propiedad.save()
-                    .then(prod => console.log(prod))
-                    .catch(err => res.status(500).json({ success: false, err: err }))
-
-                i++;
+            if (response.password === body.current) {
+                User.findByIdAndUpdate({ _id: body.id }, { password: body.password })
+                    .then(prod => res.status(200).json({ success: true, data: prod }))
+                    .catch(err => { console.log(err), res.status(500).json({ success: false, err: err }) })
+            } else {
+                res.status(200).json({ success: false, data: 'Password actual es incorrecto' })
             }
 
-            res.status(200).json({ success: true, data: response })
         })
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({ success: false, err: err })
+        })
+}
+
+exports.client = async (req, res) => {
+    const { body } = req;
+    let date = new Date();
+
+    if (Boolean(await User.countDocuments({ rut: body.rut })) || Boolean(await User.countDocuments({ email: body.email }))) {
+        res.status(500).json({ success: false, err: err })
+    } else {
+        const user = new User({
+            name: body.name,
+            lastname: body.lastname,
+            rut: body.rut,
+            email: body.email,
+            phone: body.phone,
+            password: body.password,
+            username: body.name + body.lastname + date.getSeconds() + date.getMinutes() + date.getHours() + date.getDay() + date.getMonth() + date.getFullYear(),
+            role: 'user',
+            client: true,
+            roleOptions: {},
+            calendar: []
+        })
+
+        user.save()
+            .then(async response => {
+                const prop = JSON.parse(body.propiedades);
+                var i = 0;
+                while (i < prop.length) {
+                    let propiedad = new Propiedades({
+                        id_user: mongoose.Types.ObjectId(response._id),
+                        region: prop[i].region,
+                        comuna: prop[i].comuna,
+                        proyecto: prop[i].proyecto,
+                        edificacion: prop[i].edificacion,
+                        tipo: prop[i].tipo,
+                        lote: prop[i].lote,
+                        calle: prop[i].calle,
+                        numero: prop[i].numero,
+                        idPlanta: prop[i].idPlanta,
+                        escritura: await req.tools.fileupload(req.files['escritura' + i]),
+                        incripcion: await req.tools.fileupload(req.files['inscripcion' + i]),
+                    })
+
+                    propiedad.save()
+                        .then(prod => res.status(200).json({ success: true, data: response }))
+                        .catch(err => {
+                            console.log("###", err)
+                            res.status(500).json({ success: false, err: err })
+                        })
+
+                    i++;
+                }
+
+                // res.status(200).json({ success: true, data: response })
+            })
+            .catch(err => {
+                console.log("@@@", err)
+                res.status(500).json({ success: false, err: err })
+            })
+    }
+
+}
+
+
+exports.rejectUsuario = (req, res) => {
+    User.findByIdAndUpdate({ _id: req.params.id }, { verification: false })
+        .then(user => {
+            email.userReject({ mail: user.email })
+                .then(send => {
+                    if (send) {
+                        res.status(200).json({ success: true, data: user })
+                    }
+                })
+                .catch(err => {
+                    console.log('··>', err)
+                    res.status(500).json({ success: false, err: err })
+                })
+        })
+        .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }
 
 exports.activarUsuario = (req, res) => {
-    User.findById({ _id: req.params.id })
+    User.findByIdAndUpdate({ _id: req.params.id }, { verification: true })
         .then(user => {
-            user['verification'] = true;
-            user.save()
-                .then(response => res.status(200).json({ success: true, data: response }))
-                .catch(err => res.status(500).json({ success: false, err: err }))
+            email.userActive({ mail: user.email })
+                .then(send => {
+                    if (send) {
+                        res.status(200).json({ success: true, data: user })
+                    }
+                })
+                .catch(err => {
+                    console.log('··>', err)
+                    res.status(500).json({ success: false, err: err })
+                })
         })
-        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
+        .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }
 
 exports.trabajador = (req, res) => {
@@ -104,12 +148,19 @@ exports.trabajador = (req, res) => {
         role: body.job,
         roleOptions: {},
         calendar: [],
-        verification:true
+        verification: true
     })
 
     user.save()
         .then(response => res.status(200).json({ success: true, data: response }))
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => {
+            switch (err.code) {
+                case 11000:
+                    res.status(200).json({ success: false, err: err })
+                default:
+                    res.status(500).json({ success: false, err: err })
+            }
+        })
 }
 
 exports.all = (req, res) => {
@@ -188,7 +239,7 @@ exports.inspector = (req, res) => {
         role: body.job,
         roleOptions: {},
         calendar: [],
-        verification:true
+        verification: true
     })
 
     user.save()
@@ -238,7 +289,6 @@ exports.asignar = (req, res) => {
     const fechas = JSON.parse(body.dates);
 
     User.findById({ _id: body.idProfesional }, (err, data) => {
-
         fechas.forEach((date) => {
             var fechaSolicitada = date;
             let fecha = new Date(date);
@@ -273,24 +323,23 @@ exports.asignar = (req, res) => {
  * Controlador que devuelve las horas disponible por cada profesional
  */
 
-// exports.libres = (req, res) => {
-//     User.findById({ _id: req.params.id }, (err, result) => {
-
-//         if (err) {
-//             res.status(500).json({ success: false, error: err });
-//         } else {
-//             var disponibles = [];
-//             var hrsDisponibles = [];
-//             result.calendar.map(hrs => {
-//                 if (hrs.clientId == null) {
-//                     disponibles.push(hrs.date);
-//                     hrsDisponibles.push({ date: hrs.date, hrs: hrs.hours });
-//                 }
-//             });
-//             res.status(200).json({ success: true, data: { fechas: disponibles, horas: hrsDisponibles, doc: result } });
-//         }
-//     })
-// }
+exports.libresByInspect = (req, res) => {
+    User.findById({ _id: req.params.id }, (err, result) => {
+        if (err) {
+            res.status(500).json({ success: false, error: err });
+        } else {
+            var disponibles = [];
+            var hrsDisponibles = [];
+            result.calendar.map(hrs => {
+                if (hrs.clientId == null) {
+                    disponibles.push(hrs.date);
+                    hrsDisponibles.push({ date: hrs.date, hrs: hrs.hours });
+                }
+            });
+            res.status(200).json({ success: true, data: { fechas: disponibles, horas: hrsDisponibles, doc: result } });
+        }
+    })
+}
 
 exports.agendadas = (req, res) => {
     User.findById({ _id: req.params.id })
@@ -371,6 +420,12 @@ function parseDate(date) {
         day: "2-digit",
     });
 
+    function isValidDate(date) {
+        return date && Object.prototype.toString.call(date) === "[object Date]" && !isNaN(date);
+    }
+
+    console.log('·····', date, typeof date, isValidDate(date))
+
     date = new Date(date);
 
     return dateTimeFormat
@@ -379,7 +434,26 @@ function parseDate(date) {
         .join("");
 }
 
+exports.libresBy = (req, res) => {
+    User.findById({ _id: req.params.id })
+        .then(result => {
+            var disponibles = [];
+            var hrsDisponibles = [];
+            result.calendar.map(hrs => {
+                if (parseDate(hrs.date) === parseDate(req.body.date)) {
+                    if (hrs.clientId == null) {
+                        disponibles.push(hrs.date);
+                        hrsDisponibles.push({ date: hrs.date, hrs: hrs.hours });
+                    }
+                }
+            });
+            res.status(200).json({ success: true, data: { fechas: disponibles, horas: hrsDisponibles, doc: result } });
+        })
+        .catch(err => res.status(500).json({ success: false, err: err }))
+}
+
 exports.libresByDate = (req, res) => {
+    console.log('#@', req.body.date, parseDate(req.body.date))
     User.find({})
         .then(response => {
             const hrsDisponibles = [];
@@ -387,7 +461,9 @@ exports.libresByDate = (req, res) => {
             while (i < response.length) {
                 let c = 0;
                 let calendar = response[i].calendar;
+                console.log('calendar ->', calendar);
                 while (c < calendar.length) {
+                    console.log('->', parseDate(calendar[c].date), parseDate(req.body.date))
                     if (parseDate(calendar[c].date) === parseDate(req.body.date)) {
                         let o = 0;
                         let h = calendar[c].hours
@@ -427,10 +503,9 @@ exports.libresByDate = (req, res) => {
 exports.agendar = (req, res) => {
 
     const { body } = req;
-
     User.findById({ _id: req.params.id }, (err, result) => {
         if (err) {
-            console.log(err);
+            console.log('@@@@@@@@@@', err);
             res.status(500).json({ success: false, error: err });
         } else {
             result.calendar.find((fecha) => {
@@ -476,34 +551,70 @@ exports.agendar = (req, res) => {
  * Controlador que devuelve todas las proximas horas
  */
 
-// exports.allHours = ( req, res ) => {
-//     var proximas_horas = [];
-//     User.find( {}, ( err, response ) => {
-//         if( err ){
-//             res.status( 500 ).json( { success: false, error: err } );
-//         } else {
-//             response.map( ( all ) => {
-//                 all.calendar.map( ( date ) => {
-//                     date.hours.map( ( hour ) => {
-//                         if(hour.pacienteId != null){
-//                             proximas_horas.push( 
-//                                 {
-//                                     profesional: all._id,
-//                                     fecha: date.date,
-//                                     date: new Date(date.year + '-' + date.month + '-' + date.day ),
-//                                     hora: hour.hour,
-//                                     paciente: hour.pacienteId,
-//                                     nombrePaciente: hour.nombrePaciente,
-//                                     numPhonePaciente: hour.numPhonePaciente,
-//                                     mailPaciente: hour.mailPaciente
-//                                 }
-//                             );
-//                         }
-//                     })
-//                 })
-//             })
+const isValidDate = obj => {
+    return obj instanceof Date && !isNaN(obj.valueOf())
+}
 
-//             res.status( 200 ).json( { success: true, data: proximas_horas } );
-//         }
-//     })
-// }
+
+const proxima = (user, inspect) => {
+    const proximas_horas = [];
+    return new Promise((resolve, reject) => {
+        User.find({ _id: inspect }, (err, response) => {
+            if (err) {
+                reject(err);
+            } else {
+                let a = 0;
+                while (a < response.length) {
+                    let i = 0;
+                    while (i < response[a].calendar.length) {
+                        let o = 0;
+                        while (o < response[a].calendar[i].hours.length) {
+                            if (response[a].calendar[i].hours[o].clientId != null) {
+                                let d = new Date(response[a].calendar[i].year + '-' + response[a].calendar[i].month + '-' + response[a].calendar[i].day);
+                                let current = new Date();
+                                if (response[a].calendar[i].hours[o].clientId === user) {
+                                    if (isValidDate(d) && (d >= current)) {
+                                        proximas_horas.push(
+                                            {
+                                                fecha: response[a].calendar[i].date,
+                                                date: new Date(response[a].calendar[i].year + '-' + response[a].calendar[i].month + '-' + response[a].calendar[i].day),
+                                                hora: response[a].calendar[i].hours[o].hour,
+                                                paciente: response[a].calendar[i].hours[o].clientId,
+                                            }
+                                        );
+                                    }
+                                }
+                            }
+                            o++
+                        }
+                        i++
+                    }
+                    a++
+                }
+
+                resolve(proximas_horas)
+            }
+        })
+    })
+}
+
+
+exports.asignInspect = (req, res) => {
+    User.findById({ _id: req.params.id })
+        .then(response => {
+            response['id_inpect'] = mongoose.Types.ObjectId(req.params.inspect);
+            response.save()
+                .then(doc => res.status(200).json({ success: true, data: doc }))
+                .catch(err => res.status(500).json({ success: false, err: err }))
+        })
+        .catch(err => res.status(500).json({ success: false, err: err }))
+}
+
+
+exports.dashboard = async (req, res) => {
+    let props = await Propiedades.countDocuments({ id_user: req.params.id });
+    let hrs = await proxima(req.params.id, req.params.inspect)
+    let inspections = await Inpeccion.countDocuments({ client: mongoose.Types.ObjectId(req.params.id) })
+
+    res.status(200).json({ success: true, data: { props, hrs: hrs.length > 0 ? hrs[1]: 0, inspections } })
+}

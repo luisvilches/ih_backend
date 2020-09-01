@@ -62,6 +62,13 @@ exports.all = (req, res) => {
     // .catch(err => res.status(500).json({ success: false, err: err }))
 }
 
+
+exports.findById = (req, res) => {
+    Inpeccion.findById({ _id: req.params.id })
+        .then(doc => res.status(200).json({ success: true, data: doc }))
+        .catch(err => res.status(500).json({ success: false, err: err }))
+}
+
 function changeStatusPropiedad(id, estado) {
     return new Promise((resolve, reject) => {
         Propiedades.findById({ _id: id })

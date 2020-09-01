@@ -10,6 +10,8 @@ router.post('/users', ctrl.user.client)
 router.delete('/users/:id', ctrl.user.delete)
 router.put('/users/:id', ctrl.user.update)
 router.get('/activate/user/:id', ctrl.user.activarUsuario)
+router.get('/reject/user/:id',ctrl.user.rejectUsuario)
+router.post('/setpassword', ctrl.user.setPassword)
 
 router.post('/userjob', ctrl.user.trabajador)
 router.get('/userjob', ctrl.user.allUserJob)
@@ -18,6 +20,7 @@ router.put('/userjob/:id', ctrl.user.updateUserJob)
 router.post('/inspector', ctrl.user.inspector)
 router.get('/inspector', ctrl.user.allUserinspector)
 router.put('/inspector/:id', ctrl.user.updateUserinspector)
+router.get('/calendar/inspect/:id', ctrl.user.libresByInspect)
 
 router.post("/agendar/:id", ctrl.user.agendar);
 router.post("/inspectores/assing", ctrl.user.asignar);
@@ -25,6 +28,7 @@ router.get("/inspectores/free/:id", ctrl.user.libres);
 router.get("/inspectores/agendadas/:id", ctrl.user.agendadas);
 router.get("/libres", ctrl.user.libresAll)
 router.post("/librebydate", ctrl.user.libresByDate);
+router.post('/free/:id', ctrl.user.libresBy)
 
 router.get('/projects', ctrl.proyectos.all)
 router.get('/projects/:id', ctrl.proyectos.findById)
@@ -49,14 +53,25 @@ router.get('/propiedades/:id_user',ctrl.propiedades.byUser)
 router.get('/propiedad/:id',ctrl.propiedades.byId)
 router.get('/estado/propiedad/:id/:status', ctrl.propiedades.changeStatus)
 router.get('/inspector/propiedades/:id', ctrl.propiedades.propiedadesByInspector)
+router.put('/prop/date/:id', ctrl.propiedades.setInscripcion)
+router.get('/props/:id', ctrl.propiedades.propiedades)
 
 router.post('/inspecciones', ctrl.inspecciones.create)
 router.get('/inspecciones', ctrl.inspecciones.all)
+router.get('/inspescciones/:id', ctrl.inspecciones.findById)
 router.post('/pdf/inspeccion', ctrl.inspecciones.generatePdf)
 
 router.get('/clients', ctrl.propiedades.byClient)
+router.get('/clientes/:id',ctrl.propiedades.ddd)
+router.get('/propiedad/entrega/:id', ctrl.propiedades.entrega)
+router.get('/propiedadesByClient/:id',ctrl.propiedades.propiedadesByClient )
 
-router.get('/clientes',ctrl.propiedades.ddd)
+router.put('/updateEscritura/:id',ctrl.propiedades.updateEscritura)
+router.put('/updateInscripcion/:id',ctrl.propiedades.updateInscripcion)
+
+router.get('/asign/:id/:inspect', ctrl.user.asignInspect)
+
+router.get('/dashboard/:id/:inspect', ctrl.user.dashboard)
 
 
 router.get('/validtoken', (req,res) => {

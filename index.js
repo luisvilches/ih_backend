@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const cors = require('cors')
@@ -7,8 +8,10 @@ const formidable = require('formidable')
 const mongoose = require('mongoose')
 const path = require('path')
 const utils = require('./utils');
-const { env } = require('process')
 const { auth } = require('./middlewares/auth');
+const settings = require('./settings');
+const { db } = settings;
+exports.settings = settings;
 
 // promesa formidable
 const promiseForm = (req) => {
@@ -38,7 +41,8 @@ app.use('/', require('./routes/public'));
 app.use('/api', auth, require('./routes/private'));
 
 // CONEXION DB
-mongoose.connect('mongodb://inspector:inspector2020@ds155961.mlab.com:55961/inspector_hogar', err => {
+// mongoose.connect('mongodb://inspector:inspector2020@ds155961.mlab.com:55961/inspector_hogar', err => {
+mongoose.connect(db,{ autoIndex: false }, err => {
     if (err) console.log(err);
     else console.log('open db');
 })

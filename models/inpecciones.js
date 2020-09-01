@@ -12,6 +12,7 @@ const Inspecciones = new Schema({
     estado:{type:String,default:"creada"},
     estadoCliente:{type:String},
     ficha_inspeccion:{type:Object, default:{url:""}},
+    fecha_entrega: { type: String, default: '' }
 });
 autoIncrement.initialize(mongoose.connection);
 Inspecciones.plugin(timestamps);
