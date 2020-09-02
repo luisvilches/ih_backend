@@ -32,7 +32,6 @@ exports.userActive = function (body) {
                     }
                 })
             })
-
     })
 }
 

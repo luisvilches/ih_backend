@@ -59,7 +59,6 @@ exports.byClient = (req, res) => {
 
 
 exports.ddd = (req, res) => {
-    console.log('!@', req.params.id)
     User.aggregate([
         { $match: { client: true, id_inpect: mongoose.Types.ObjectId(req.params.id) } },
         {
@@ -76,7 +75,7 @@ exports.ddd = (req, res) => {
                 localField: "_id",
                 foreignField: "id_user",
                 as: "propiedades"
-            }
+            },
         },
     ])
         .then(response => { console.log(response); res.status(200).json({ success: true, data: response }) })
@@ -192,7 +191,7 @@ exports.propiedadesByClient = (req, res) => {
 }
 
 
-exports.propiedades = (req,res) => {
+exports.propiedades = (req, res) => {
     User.aggregate([
         { $match: { client: true, id_inpect: mongoose.Types.ObjectId(req.params.id) } },
         {
@@ -204,6 +203,6 @@ exports.propiedades = (req,res) => {
             }
         },
     ])
-    .then(response => res.status(200).json({success:true,data:response}))
-    .catch(err => res.status(500).json({success:false,data:err}))
+        .then(response => res.status(200).json({ success: true, data: response }))
+        .catch(err => res.status(500).json({ success: false, data: err }))
 }
