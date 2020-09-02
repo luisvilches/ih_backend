@@ -2,12 +2,13 @@ const path = require('path');
 const fs = require('fs');
 
 function uploadFile(obj, name, folder, req) {
-
+    name = path.parse(name)
     let date = new Date();
-    let nombre_nuevo = name + date.getDate() + date.getSeconds() + date.getMilliseconds() + "_file";
+    let nombre_nuevo = name.name + date.getDate() + date.getSeconds() + date.getMilliseconds() + "_file";
     let ruta_archivo = obj.path;
-    let nueva_ruta = path.join(path.resolve(), 'public', folder ? folder : "", nombre_nuevo + path.extname(ruta_archivo).toLowerCase());//"."+ folder + nombre_nuevo + path.extname(ruta_archivo).toLowerCase();
-    let nombre_imagen = nombre_nuevo + path.extname(ruta_archivo).toLowerCase();
+    let nueva_ruta = path.join(path.resolve(), 'public', folder ? folder : "", nombre_nuevo + name.ext);//"."+ folder + nombre_nuevo + path.extname(ruta_archivo).toLowerCase();
+    let nombre_imagen = nombre_nuevo + name.ext;
+
     fs.createReadStream(ruta_archivo).pipe(fs.createWriteStream(nueva_ruta));
     return {
         name: nombre_imagen,
