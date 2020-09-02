@@ -95,27 +95,45 @@ exports.changeStatus = (req, res) => {
 
 exports.entrega = (req, res) => {
     let s = new Date();
+    console.log('@id', req.params.id)
     Propiedades.findById({ _id: req.params.id })
         .then(doc => {
             doc['estado'] = 'entregada';
             doc['fecha_entrega'] = parseDate(s);
             doc.save()
                 .then(response => {
-                    Inspecciones.findById({ _id: response.inspeccion_actual })
+                    console.log('@response', response.inspeccion_actual)
+                    Inspecciones.findById({ _id: mongoose.Types.ObjectId(response.inspeccion_actual) })
                         .then(ins => {
-                            ins['estado'] = 'entregada';
-                            doc['fecha_entrega'] = parseDate(s);
-                            ins.save()
-                                .then(result => {
-                                    res.status(200).json({ success: true, data: response })
-                                })
-                                .catch(err => res.status(500).json({ success: false, err: err }))
+                            if (ins == null) {
+                                res.status(200).json({ success: false, err: 'Sin inspeccion en curso' })
+                            } else {
+                                console.log('@ins', ins);
+                                ins['estado'] = 'entregada';
+                                ins.save()
+                                    .then(result => {
+                                        res.status(200).json({ success: true, data: response })
+                                    })
+                                    .catch(err => {
+                                        console.log(err);
+                                        res.status(500).json({ success: false, err: err })
+                                    })
+                            }
                         })
-                        .catch(err => res.status(500).json({ success: false, err: err }))
+                        .catch(err => {
+                            console.log(err);
+                            res.status(500).json({ success: false, err: err })
+                        })
                 })
-                .catch(err => res.status(500).json({ success: false, err: err }))
+                .catch(err => {
+                    console.log(err);
+                    res.status(500).json({ success: false, err: err })
+                })
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ success: false, err: err })
+        })
 }
 
 function parseDate(date) {
@@ -174,6 +192,7 @@ exports.updateInscripcion = (req, res) => {
 exports.setInscripcion = (req, res) => {
     Propiedades.findById({ _id: req.params.id })
         .then(response => {
+            console.log('@date', req.body.date)
             response['recepcion_municiapal'] = req.body.date;
             response.save()
                 .then(doc => {
