@@ -312,7 +312,6 @@ exports.asignar = (req, res) => {
             if (err) {
                 res.status(500).json({ success: false, error: error });
             } else {
-                // app.io.sockets.emit('update_doctor');
                 res.status(200).json({ success: true, data: result });
             }
         });
@@ -524,7 +523,6 @@ exports.agendar = (req, res) => {
                                         if (error) {
                                             res.status(500).json({ success: false, error: error });
                                         } else {
-                                            // app.io.sockets.emit('update_doctor')
                                             const propiedad = JSON.parse(body.propiedad);
                                             Inpeccion.findById({ _id: propiedad.inspeccion_actual })
                                                 .then(insp => {

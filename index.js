@@ -2,8 +2,8 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const cors = require('cors')
-const server = require('http').createServer(app)
-const io = require('socket.io').listen(server, { origins: '*:*' })
+// const server = require('http').createServer(app)
+// const io = require('socket.io').listen(server, { origins: '*:*' })
 const formidable = require('formidable')
 const mongoose = require('mongoose')
 const path = require('path')
@@ -63,7 +63,7 @@ mongoose.connect(db,{ autoIndex: false }, err => {
 })
 
 // SERVER
-server.listen(12001, err => err ? console.log(err) : console.log("server running in port " + 12001));
+app.listen(12001, err => err ? console.log(err) : console.log("server running in port " + 12001));
 
 // export socket.io
 exports.io = io;
