@@ -66,4 +66,4 @@ mongoose.connect(db,{ autoIndex: false }, err => {
 app.listen(12001, err => err ? console.log(err) : console.log("server running in port " + 12001));
 
 // export socket.io
-exports.io = io;
+// exports.io = io;
