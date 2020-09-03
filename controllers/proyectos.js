@@ -13,25 +13,25 @@ exports.nuevo = (req, res) => {
 
     proyecto.save()
         .then(response => res.status(200).json({ success: true, data: response }))
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }
 
 exports.all = (req, res) => {
     Proyecto.find({})
         .then(response => res.status(200).json({ success: true, data: response }))
-        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
+        .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }
 
 exports.delete = (req, res) => {
     Proyecto.remove({ _id: req.params.id })
         .then(response => res.status(200).json({ success: true, data: response }))
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }
 
 exports.findById = (req, res) => {
     Proyecto.findById({ _id: req.params.id })
         .then(response => res.status(200).json({ success: true, data: response }))
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }
 
 exports.update = (req, res) => {
@@ -50,9 +50,11 @@ exports.update = (req, res) => {
                 .then(response => res.status(200).json({ success: true, data: response }))
                 .catch(err => {
                     console.log(err)
-                    res.status(500).json({ success: false, err: err })})
+                    res.status(500).json({ success: false, err: err })
+                })
         })
         .catch(err => {
             console.log(err)
-            res.status(500).json({ success: false, err: err })})
+            res.status(500).json({ success: false, err: err })
+        })
 }

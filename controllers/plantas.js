@@ -23,38 +23,38 @@ exports.nuevo = async (req, res) => {
 
     edificacion.save()
         .then(response => res.status(200).json({ success: true, data: response }))
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
 }
 
 exports.findForm = (req, res) => {
     const { params } = req;
     Plantas.find({ idProyecto: params.proyecto, idedificio: params.edificacion })
         .then(async response => res.status(200).json({ success: true, data: response }))
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
 }
 
 exports.all = (req, res) => {
     Plantas.find({})
         .then(async response => res.status(200).json({ success: true, data: response }))
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
 }
 
 exports.delete = (req, res) => {
     Plantas.remove({ _id: req.params.id })
         .then(response => res.status(200).json({ success: true, data: response }))
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
 }
 
 exports.findById = (req, res) => {
     Plantas.findById({ _id: req.params.id })
         .then(response => res.status(200).json({ success: true, data: response }))
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
 }
 
 exports.findByNameProject = (req, res) => {
     Plantas.find({ proyecto: req.params.project })
         .then(response => res.status(200).json({ success: true, data: response }))
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
 }
 
 exports.update = (req, res) => {
@@ -76,7 +76,7 @@ exports.update = (req, res) => {
 
             doc.save()
                 .then(response => res.status(200).json({ success: true, data: response }))
-                .catch(err => res.status(500).json({ success: false, err: err }))
+                .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
         })
-        .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
+        .catch(err => { console.log(err); {console.log(err);res.status(500).json({ success: false, err: err })} })
 }

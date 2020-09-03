@@ -44,7 +44,7 @@ exports.client = async (req, res) => {
     let date = new Date();
 
     if (Boolean(await User.countDocuments({ rut: body.rut })) || Boolean(await User.countDocuments({ email: body.email }))) {
-        res.status(500).json({ success: false, err: err })
+        res.status(500).json({ success: false, err: {err:'usuario ya existe'} })
     } else {
         const user = new User({
             name: body.name,
@@ -166,25 +166,25 @@ exports.trabajador = (req, res) => {
 exports.all = (req, res) => {
     User.find({ client: true })
         .then(response => res.status(200).json({ success: true, data: response }))
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
 }
 
 exports.allUserJob = (req, res) => {
     User.find({ client: false })
         .then(response => res.status(200).json({ success: true, data: response }))
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
 }
 
 exports.delete = (req, res) => {
     User.remove({ _id: req.params.id })
         .then(response => res.status(200).json({ success: true, data: response }))
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
 }
 
 exports.findById = (req, res) => {
     User.findById({ _id: req.params.id })
         .then(response => res.status(200).json({ success: true, data: response }))
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
 }
 
 exports.update = (req, res) => {
@@ -200,9 +200,9 @@ exports.update = (req, res) => {
 
             doc.save()
                 .then(response => res.status(200).json({ success: true, data: response }))
-                .catch(err => res.status(500).json({ success: false, err: err }))
+                .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
         })
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
 }
 
 
@@ -221,9 +221,9 @@ exports.updateUserJob = (req, res) => {
 
             doc.save()
                 .then(response => res.status(200).json({ success: true, data: response }))
-                .catch(err => res.status(500).json({ success: false, err: err }))
+                .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
         })
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
 }
 
 exports.inspector = (req, res) => {
@@ -244,20 +244,20 @@ exports.inspector = (req, res) => {
 
     user.save()
         .then(response => res.status(200).json({ success: true, data: response }))
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
 }
 
 
 exports.allUserinspector = (req, res) => {
     User.find({ client: false, role: "inspect" })
         .then(response => res.status(200).json({ success: true, data: response }))
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
 }
 
 exports.delete = (req, res) => {
     User.remove({ _id: req.params.id })
         .then(response => res.status(200).json({ success: true, data: response }))
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
 }
 
 
@@ -277,9 +277,9 @@ exports.updateUserinspector = (req, res) => {
 
             doc.save()
                 .then(response => res.status(200).json({ success: true, data: response }))
-                .catch(err => res.status(500).json({ success: false, err: err }))
+                .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
         })
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
 }
 
 exports.asignar = (req, res) => {
@@ -310,6 +310,7 @@ exports.asignar = (req, res) => {
 
         data.save((error, result) => {
             if (err) {
+                console.log(err)
                 res.status(500).json({ success: false, error: error });
             } else {
                 res.status(200).json({ success: true, data: result });
@@ -325,6 +326,7 @@ exports.asignar = (req, res) => {
 exports.libresByInspect = (req, res) => {
     User.findById({ _id: req.params.id }, (err, result) => {
         if (err) {
+            console.log(err)
             res.status(500).json({ success: false, error: err });
         } else {
             var disponibles = [];
@@ -366,8 +368,7 @@ exports.agendadas = (req, res) => {
 
             res.status(200).json({ success: true, data: hours });
         })
-        // .catch(err => res.status(500).json({ success: false, err: err }))
-        .catch(err => console.log(err))
+        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
 }
 
 
@@ -384,7 +385,7 @@ exports.libres = (req, res) => {
             });
             res.status(200).json({ success: true, data: { fechas: disponibles, horas: hrsDisponibles, doc: result } });
         })
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
 }
 
 exports.libresAll = (req, res) => {
@@ -409,7 +410,7 @@ exports.libresAll = (req, res) => {
             res.status(200).json({ success: true, data: { fechas: disponibles, horas: hrsDisponibles, doc: response } });
 
         })
-        .catch(err => res.status(500).json({ success: false, error: err }))
+        .catch(err => {console.log(err);res.status(500).json({ success: false, error: err })})
 }
 
 function parseDate(date) {
@@ -448,7 +449,7 @@ exports.libresBy = (req, res) => {
             });
             res.status(200).json({ success: true, data: { fechas: disponibles, horas: hrsDisponibles, doc: result } });
         })
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
 }
 
 exports.libresByDate = (req, res) => {
@@ -513,6 +514,7 @@ exports.agendar = (req, res) => {
                         if (fec.hour.toString().toLowerCase().trim() === body.hour.toString().toLowerCase().trim()) {
                             User.findById({ _id: body.IdClient, client: true }, (errPac, pac) => {
                                 if (errPac) {
+                                    console.log(errPac);
                                     res.status(500).json({ success: false, error: errPac });
                                 } else {
                                     fec.clientId = pac._id;
@@ -521,6 +523,7 @@ exports.agendar = (req, res) => {
                                     fec.propiedad = JSON.parse(body.propiedad);
                                     result.save((error, data) => {
                                         if (error) {
+                                            console.log(error)
                                             res.status(500).json({ success: false, error: error });
                                         } else {
                                             const propiedad = JSON.parse(body.propiedad);
@@ -559,6 +562,7 @@ const proxima = (user, inspect) => {
     return new Promise((resolve, reject) => {
         User.find({ _id: inspect }, (err, response) => {
             if (err) {
+                console.log(err);
                 reject(err);
             } else {
                 let a = 0;
@@ -603,9 +607,9 @@ exports.asignInspect = (req, res) => {
             response['id_inpect'] = mongoose.Types.ObjectId(req.params.inspect);
             response.save()
                 .then(doc => res.status(200).json({ success: true, data: doc }))
-                .catch(err => res.status(500).json({ success: false, err: err }))
+                .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
         })
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
 }
 
 

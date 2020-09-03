@@ -28,12 +28,12 @@ exports.create = (req, res) => {
                     ress['inspeccion_actual'] = mongoose.Types.ObjectId(response._id);
                     ress.save()
                         .then(doc => res.status(200).json({ success: true, data: doc }))
-                        .catch(err => res.status(500).json({ success: false, err: err }))
+                        .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
                 })
-                .catch(err => res.status(500).json({ success: false, err: err }))
+                .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 
         })
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }
 
 exports.all = (req, res) => {
@@ -56,17 +56,17 @@ exports.all = (req, res) => {
         },
     ])
         .then(doc => res.status(200).json({ success: true, data: doc }))
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
     // Inpeccion.find()
     // .then(doc => res.status(200).json({ success: true, data: doc }))
-    // .catch(err => res.status(500).json({ success: false, err: err }))
+    // .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
 }
 
 
 exports.findById = (req, res) => {
     Inpeccion.findById({ _id: req.params.id })
         .then(doc => res.status(200).json({ success: true, data: doc }))
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }
 
 function changeStatusPropiedad(id, estado) {
@@ -98,7 +98,7 @@ exports.generatePdf = (req, res) => {
 
             pdf.create(tmpPdf(contenido), options).toFile(path.join(path.resolve(), 'public', 'inspecciones', response._id + '_' + '.pdf'), (err, result) => {
                 if (err) {
-                    res.status(500).json({ success: false, err: err })
+                    { console.log(err); res.status(500).json({ success: false, err: err }) }
                 } else {
                     response['estado'] = 'reparacion';
                     response['ficha_inspeccion'] = 'http://' + req.headers.host + '/' + 'inspecciones/' + response._id + '_' + '.pdf'
@@ -107,11 +107,11 @@ exports.generatePdf = (req, res) => {
                             await changeStatusPropiedad(response.propiedad, "reparacion");
                             res.status(200).json({ success: true, url: 'http://' + req.headers.host + '/' + 'inspecciones/' + response._id + '_' + '.pdf' })
                         })
-                        .catch(err => res.status(500).json({ success: false, err: err }))
+                        .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
                 }
             })
         })
-        .catch(err => res.status(500).json({ success: false, err: err }))
+        .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }
 
 function dateParse(date) {
