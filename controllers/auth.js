@@ -4,7 +4,6 @@ const { createTokens } = require('../utils/createToken');
 exports.auth =  (req, res) => {
     User.findOne({email: req.body.email,verification:true},(err, user) => {
         if (err) throw err;
-        console.log(user)
         if (!user) {
             res.json({ success: false, message: 'Authentication failed. User not found.' });
         } else if (user) {

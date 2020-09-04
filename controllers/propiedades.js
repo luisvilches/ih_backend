@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 exports.byId = (req, res) => {
     Propiedades.findById({ _id: req.params.id })
         .then(response => res.status(200).json({ success: true, data: response }))
-        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
+        .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }
 
 exports.byUser = (req, res) => {
@@ -31,7 +31,7 @@ exports.byUser = (req, res) => {
         }
     ])
         .then(response => res.status(200).json({ success: true, data: response }))
-        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
+        .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }
 
 exports.byClient = (req, res) => {
@@ -54,7 +54,7 @@ exports.byClient = (req, res) => {
         },
     ])
         .then(response => res.status(200).json({ success: true, data: response }))
-        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
+        .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }
 
 
@@ -78,8 +78,10 @@ exports.ddd = (req, res) => {
             },
         },
     ])
-        .then(response => { console.log(response); res.status(200).json({ success: true, data: response }) })
-        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
+        .then(response => { res.status(200).json({ success: true, data: response }) })
+        .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
+
+    //  @respose
 }
 
 exports.changeStatus = (req, res) => {
@@ -88,27 +90,24 @@ exports.changeStatus = (req, res) => {
             doc['estado'] = req.params.status
             doc.save()
                 .then(response => res.status(200).json({ success: true, data: response }))
-                .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
+                .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
         })
         .catch(err => console.log(err))
 }
 
 exports.entrega = (req, res) => {
     let s = new Date();
-    console.log('@id', req.params.id)
     Propiedades.findById({ _id: req.params.id })
         .then(doc => {
             doc['estado'] = 'entregada';
             doc['fecha_entrega'] = parseDate(s);
             doc.save()
                 .then(response => {
-                    console.log('@response', response.inspeccion_actual)
                     Inspecciones.findById({ _id: mongoose.Types.ObjectId(response.inspeccion_actual) })
                         .then(ins => {
                             if (ins == null) {
                                 res.status(200).json({ success: false, err: 'Sin inspeccion en curso' })
                             } else {
-                                console.log('@ins', ins);
                                 ins['estado'] = 'entregada';
                                 ins.save()
                                     .then(result => {
@@ -116,23 +115,23 @@ exports.entrega = (req, res) => {
                                     })
                                     .catch(err => {
                                         console.log(err);
-                                        {console.log(err);res.status(500).json({ success: false, err: err })}
+                                        { console.log(err); res.status(500).json({ success: false, err: err }) }
                                     })
                             }
                         })
                         .catch(err => {
                             console.log(err);
-                            {console.log(err);res.status(500).json({ success: false, err: err })}
+                            { console.log(err); res.status(500).json({ success: false, err: err }) }
                         })
                 })
                 .catch(err => {
                     console.log(err);
-                    {console.log(err);res.status(500).json({ success: false, err: err })}
+                    { console.log(err); res.status(500).json({ success: false, err: err }) }
                 })
         })
         .catch(err => {
             console.log(err);
-            {console.log(err);res.status(500).json({ success: false, err: err })}
+            { console.log(err); res.status(500).json({ success: false, err: err }) }
         })
 }
 
@@ -163,7 +162,7 @@ exports.propiedadesByInspector = (req, res) => {
 
             res.status(200).json({ success: true, data: data })
         })
-        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
+        .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }
 
 
@@ -173,9 +172,9 @@ exports.updateEscritura = (req, res) => {
             response['escritura'] = await req.tools.fileupload(req.files['escritura']);
             response.save()
                 .then(save => res.status(200).json({ success: true, data: save }))
-                .catch(err => { console.log(err); {console.log(err);res.status(500).json({ success: false, err: err })} })
+                .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
         })
-        .catch(err => { console.log(err); {console.log(err);res.status(500).json({ success: false, err: err })} })
+        .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }
 
 exports.updateInscripcion = (req, res) => {
@@ -184,23 +183,22 @@ exports.updateInscripcion = (req, res) => {
             response['incripcion'] = await req.tools.fileupload(req.files['inscripcion']);
             response.save()
                 .then(save => res.status(200).json({ success: true, data: save }))
-                .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
+                .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
         })
-        .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
+        .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }
 
 exports.setInscripcion = (req, res) => {
     Propiedades.findById({ _id: req.params.id })
         .then(response => {
-            console.log('@date', req.body.date)
             response['recepcion_municiapal'] = req.body.date;
             response.save()
                 .then(doc => {
                     res.status(200).json({ success: true, data: response })
                 })
-                .catch(err => { console.log(err); {console.log(err);res.status(500).json({ success: false, err: err })} })
+                .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
         })
-        .catch(err => { console.log(err); {console.log(err);res.status(500).json({ success: false, err: err })} })
+        .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }
 
 exports.propiedadesByClient = (req, res) => {

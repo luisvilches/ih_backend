@@ -424,8 +424,6 @@ function parseDate(date) {
         return date && Object.prototype.toString.call(date) === "[object Date]" && !isNaN(date);
     }
 
-    console.log('·····', date, typeof date, isValidDate(date))
-
     date = new Date(date);
 
     return dateTimeFormat
@@ -453,7 +451,6 @@ exports.libresBy = (req, res) => {
 }
 
 exports.libresByDate = (req, res) => {
-    console.log('#@', req.body.date, parseDate(req.body.date))
     User.find({})
         .then(response => {
             const hrsDisponibles = [];
@@ -461,9 +458,7 @@ exports.libresByDate = (req, res) => {
             while (i < response.length) {
                 let c = 0;
                 let calendar = response[i].calendar;
-                console.log('calendar ->', calendar);
                 while (c < calendar.length) {
-                    console.log('->', parseDate(calendar[c].date), parseDate(req.body.date))
                     if (parseDate(calendar[c].date) === parseDate(req.body.date)) {
                         let o = 0;
                         let h = calendar[c].hours

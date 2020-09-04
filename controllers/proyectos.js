@@ -36,7 +36,6 @@ exports.findById = (req, res) => {
 
 exports.update = (req, res) => {
     const { body } = req;
-    console.log('llega')
     Proyecto.findById({ _id: req.params.id })
         .then(doc => {
             doc['name'] = body.name

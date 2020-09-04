@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const ctrl = require('../controllers');
 
-router.get('/companys',ctrl.companys.all)
-router.get('/regions',ctrl.regions.regions)
+router.get('/companys', ctrl.companys.all)
+router.get('/regions', ctrl.regions.regions)
 
 router.get('/users', ctrl.user.all)
 router.get('/users/:id', ctrl.user.findById)
@@ -10,7 +10,7 @@ router.post('/users', ctrl.user.client)
 router.delete('/users/:id', ctrl.user.delete)
 router.put('/users/:id', ctrl.user.update)
 router.get('/activate/user/:id', ctrl.user.activarUsuario)
-router.get('/reject/user/:id',ctrl.user.rejectUsuario)
+router.get('/reject/user/:id', ctrl.user.rejectUsuario)
 router.post('/setpassword', ctrl.user.setPassword)
 
 router.post('/userjob', ctrl.user.trabajador)
@@ -41,7 +41,7 @@ router.get('/edifications/:id', ctrl.edificaciones.findById)
 router.post('/edifications', ctrl.edificaciones.nuevo)
 router.delete('/edifications/:id', ctrl.edificaciones.delete)
 router.put('/edifications/:id', ctrl.edificaciones.update)
-router.get('/edification/project/:project',ctrl.edificaciones.findByNameProject)
+router.get('/edification/project/:project', ctrl.edificaciones.findByNameProject)
 
 router.get('/plantas', ctrl.plantas.all)
 router.get('/plantas/:id', ctrl.plantas.findById)
@@ -49,8 +49,8 @@ router.post('/plantas', ctrl.plantas.nuevo)
 router.delete('/plantas/:id', ctrl.plantas.delete)
 router.put('/plantas/:id', ctrl.plantas.update)
 
-router.get('/propiedades/:id_user',ctrl.propiedades.byUser)
-router.get('/propiedad/:id',ctrl.propiedades.byId)
+router.get('/propiedades/:id_user', ctrl.propiedades.byUser)
+router.get('/propiedad/:id', ctrl.propiedades.byId)
 router.get('/estado/propiedad/:id/:status', ctrl.propiedades.changeStatus)
 router.get('/inspector/propiedades/:id', ctrl.propiedades.propiedadesByInspector)
 router.put('/prop/date/:id', ctrl.propiedades.setInscripcion)
@@ -62,21 +62,21 @@ router.get('/inspescciones/:id', ctrl.inspecciones.findById)
 router.post('/pdf/inspeccion', ctrl.inspecciones.generatePdf)
 
 router.get('/clients', ctrl.propiedades.byClient)
-router.get('/clientes/:id',ctrl.propiedades.ddd)
+router.get('/clientes/:id', ctrl.propiedades.ddd)
 router.get('/propiedad/entrega/:id', ctrl.propiedades.entrega)
-router.get('/propiedadesByClient/:id',ctrl.propiedades.propiedadesByClient )
+router.get('/propiedadesByClient/:id', ctrl.propiedades.propiedadesByClient)
 
-router.put('/updateEscritura/:id',ctrl.propiedades.updateEscritura)
-router.put('/updateInscripcion/:id',ctrl.propiedades.updateInscripcion)
+router.put('/updateEscritura/:id', ctrl.propiedades.updateEscritura)
+router.put('/updateInscripcion/:id', ctrl.propiedades.updateInscripcion)
 
 router.get('/asign/:id/:inspect', ctrl.user.asignInspect)
 
 router.get('/dashboard/:id/:inspect', ctrl.user.dashboard)
 
 
-router.get('/validtoken', (req,res) => {
+router.get('/validtoken', (req, res) => {
     console.log('eeee')
-    res.json({valid:true})
+    res.json({ valid: true })
 })
 
 
