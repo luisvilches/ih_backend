@@ -4,13 +4,14 @@ const Payments = require('../models/payments');
 const Propiedades = require('../models/propiedades');
 const User = require('../models/user');
 const mongoose = require('mongoose')
+const { site } = require('../settings');
 
 const config = {
     "apiKey": "6716E8F4-3097-420C-B1FC-1LC5760380DB",
     "secretKey": "1a51ca81b8174e08ee3e1e9d63c8d3802f7984c7",
     "apiURL": "https://sandbox.flow.cl/api",
-    "baseURL": "http://167.99.168.155/", //"http://localhost:5000",
-    "site": "http://167.99.168.155/"
+    "baseURL": site, //"http://localhost:5000",
+    "site": site
 }
 
 function getStatus(status) {

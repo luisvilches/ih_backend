@@ -1,5 +1,7 @@
+const { site } = require('../settings');
+
 module.exports = function () {
-    return `
+  return `
     <heml>
   <head>
     <subject>Welcome to HEML!</subject>
@@ -48,7 +50,7 @@ module.exports = function () {
             <p>Desde ahora puedes ingresar a tu cuenta en nuestra plataforma y realizar con confianza la inspección de tu nueva propiedad.</p>
             <br/>
             <br/>
-            <a href="https://heml.io">Ir a Inspector Hogar</a>
+            <a href="${site}">Ir a Inspector Hogar</a>
           </column>
         </row>
     </container>

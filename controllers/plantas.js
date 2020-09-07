@@ -71,7 +71,10 @@ exports.update = (req, res) => {
             doc['casa_tipo'] = body.casa_tipo
             doc['m2'] = body.m2
             doc['tipologia'] = body.tipologia
-            // doc['plano'] = JSON.parse(body.old_docs).concat(await req.tools.fileupload(files.docs));
+            console.log('@file',files.plano)
+            if(files.plano != null && files.plano != undefined){
+                doc['plano'] = await req.tools.fileupload(files.plano);
+            }
             doc['habitaciones'] = JSON.parse(body.habitaciones)
 
             doc.save()
