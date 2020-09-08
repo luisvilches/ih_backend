@@ -11,8 +11,8 @@ exports.byId = (req, res) => {
 
 exports.byUser = (req, res) => {
 
-
-    Propiedades.aggregate([
+    Propiedades.aggregate([ 
+        { $match: { id_user: mongoose.Types.ObjectId(req.params.id_user) } },
         {
             $lookup: {
                 from: User.collection.name,

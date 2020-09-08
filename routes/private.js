@@ -22,7 +22,7 @@ router.get('/inspector', ctrl.user.allUserinspector)
 router.put('/inspector/:id', ctrl.user.updateUserinspector)
 router.get('/calendar/inspect/:id', ctrl.user.libresByInspect)
 
-router.post("/agendar/:id", ctrl.user.agendar);
+router.post("/agendar/:id", ctrl.user.agendar); 
 router.post("/inspectores/assing", ctrl.user.asignar);
 router.get("/inspectores/free/:id", ctrl.user.libres);
 router.get("/inspectores/agendadas/:id", ctrl.user.agendadas);

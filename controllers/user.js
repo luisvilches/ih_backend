@@ -525,6 +525,7 @@ exports.agendar = (req, res) => {
                                             Inpeccion.findById({ _id: propiedad.inspeccion_actual })
                                                 .then(insp => {
                                                     insp['estado'] = 'agendada';
+                                                    insp['date'] = body.date;
                                                     insp['id_inspector'] = mongoose.Types.ObjectId(result._id);
                                                     insp.save()
                                                         .then(aa => res.status(200).json({ success: true, data: data }))
