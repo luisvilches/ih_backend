@@ -3,6 +3,37 @@ const Inspecciones = require('../models/inpecciones')
 const User = require('../models/user');
 const mongoose = require('mongoose')
 
+exports.create = async (req, res) => {
+    const { body } = req;
+    let propiedad = new Propiedades({
+        id_user: mongoose.Types.ObjectId(body.id_user),
+        region: body.region,
+        comuna: body.comuna,
+        proyecto: body.proyecto,
+        edificacion: body.edificacion,
+        tipo: body.tipo,
+        lote: body.lote,
+        calle: body.calle,
+        numero: body.numero,
+        idPlanta: body.idPlanta,
+        escritura: await req.tools.fileupload(req.files['escritura']),
+        incripcion: await req.tools.fileupload(req.files['inscripcion']),
+    })
+
+    propiedad.save()
+        .then(response => res.status(200).json({ success: true, data: response }))
+        .catch(err => {
+            console.log("###", err)
+            res.status(500).json({ success: false, err: err })
+        })
+}
+
+exports.remove = (req, res) => {
+    Propiedades.remove({ _id: req.params.id })
+        .then(response => res.status(200).json({ success: true, data: response }))
+        .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
+}
+
 exports.byId = (req, res) => {
     Propiedades.findById({ _id: req.params.id })
         .then(response => res.status(200).json({ success: true, data: response }))
@@ -11,7 +42,7 @@ exports.byId = (req, res) => {
 
 exports.byUser = (req, res) => {
 
-    Propiedades.aggregate([ 
+    Propiedades.aggregate([
         { $match: { id_user: mongoose.Types.ObjectId(req.params.id_user) } },
         {
             $lookup: {

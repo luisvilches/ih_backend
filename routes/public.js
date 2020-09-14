@@ -16,5 +16,6 @@ router.get('/plantas/:proyecto/:edificacion',ctrl.plantas.findForm)
 
 router.post('/apiFlow/payment_confirm', ctrl.payment.confirm)
 router.post('/apiFlow/pay', ctrl.payment.pay)
+router.post('/recovery', ctrl.user.recovery)
 
 module.exports = router;

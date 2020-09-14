@@ -13,6 +13,7 @@ router.get('/activate/user/:id', ctrl.user.activarUsuario)
 router.get('/reject/user/:id', ctrl.user.rejectUsuario)
 router.post('/setpassword', ctrl.user.setPassword)
 
+
 router.post('/userjob', ctrl.user.trabajador)
 router.get('/userjob', ctrl.user.allUserJob)
 router.put('/userjob/:id', ctrl.user.updateUserJob)
@@ -55,6 +56,8 @@ router.get('/estado/propiedad/:id/:status', ctrl.propiedades.changeStatus)
 router.get('/inspector/propiedades/:id', ctrl.propiedades.propiedadesByInspector)
 router.put('/prop/date/:id', ctrl.propiedades.setInscripcion)
 router.get('/props/:id', ctrl.propiedades.propiedades)
+router.post('/propiedades', ctrl.propiedades.create)
+router.delete('/propiedades/:id', ctrl.propiedades.remove)
 
 router.post('/inspecciones', ctrl.inspecciones.create)
 router.get('/inspecciones', ctrl.inspecciones.all)
