@@ -14,6 +14,7 @@ const Planta = new Schema({
     num_planta: { type: String },
     num_departamento: { type: String },
     num_calle: { type: String },
+    calle: { type: String },
     casa_tipo: { type: String },
     m2: { type: String },
     tipologia: { type: String },

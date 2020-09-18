@@ -15,6 +15,7 @@ exports.nuevo = async (req, res) => {
         num_departamento: body.num_departamento,
         num_calle: body.num_calle,
         casa_tipo: body.casa_tipo,
+        calle:body.calle,
         m2: body.m2,
         tipologia: body.tipologia,
         plano: await req.tools.fileupload(files.plano),
@@ -68,6 +69,7 @@ exports.update = (req, res) => {
             doc['num_planta'] = body.num_planta
             doc['num_departamento'] = body.num_departamento
             doc['num_calle'] = body.num_calle
+            doc['calle'] = body.calle
             doc['casa_tipo'] = body.casa_tipo
             doc['m2'] = body.m2
             doc['tipologia'] = body.tipologia

@@ -68,12 +68,9 @@ router.get('/clients', ctrl.propiedades.byClient)
 router.get('/clientes/:id', ctrl.propiedades.ddd)
 router.get('/propiedad/entrega/:id', ctrl.propiedades.entrega)
 router.get('/propiedadesByClient/:id', ctrl.propiedades.propiedadesByClient)
-
 router.put('/updateEscritura/:id', ctrl.propiedades.updateEscritura)
 router.put('/updateInscripcion/:id', ctrl.propiedades.updateInscripcion)
-
 router.get('/asign/:id/:inspect', ctrl.user.asignInspect)
-
 router.get('/dashboard/:id/:inspect', ctrl.user.dashboard)
 
 
