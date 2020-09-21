@@ -66,9 +66,11 @@ exports.client = async (req, res) => {
     const { body } = req;
     let date = new Date();
 
-    if (Boolean(await User.countDocuments({ rut: body.rut })) || Boolean(await User.countDocuments({ email: body.email }))) {
-        res.status(500).json({ success: false, err: { err: 'usuario ya existe' } })
-    } else {
+    if (Boolean(await User.countDocuments({ rut: body.rut }))) {
+        res.status(200).json({ success: false, err: { msg: 'Rut ya existe' } })
+    } else if (Boolean(await User.countDocuments({ email: body.email }))) {
+        res.status(200).json({ success: false, err: { msg: 'Correo ya existe' } })
+     } else {
         const user = new User({
             name: body.name,
             lastname: body.lastname,
@@ -463,6 +465,7 @@ exports.libresBy = (req, res) => {
             result.calendar.map(hrs => {
                 if (parseDate(hrs.date) === parseDate(req.body.date)) {
                     if (hrs.clientId == null) {
+                        console.log('@',hrs)
                         disponibles.push(hrs.date);
                         hrsDisponibles.push({ date: hrs.date, hrs: hrs.hours });
                     }
@@ -519,7 +522,6 @@ exports.libresByDate = (req, res) => {
 
 // id: id_inspector
 exports.agendar = (req, res) => {
-
     const { body } = req;
     User.findById({ _id: req.params.id }, (err, result) => {
         if (err) {
@@ -549,9 +551,12 @@ exports.agendar = (req, res) => {
                                                 .then(insp => {
                                                     insp['estado'] = 'agendada';
                                                     insp['date'] = body.date;
+                                                    insp['hour'] = body.hour;
                                                     insp['id_inspector'] = mongoose.Types.ObjectId(result._id);
                                                     insp.save()
-                                                        .then(aa => res.status(200).json({ success: true, data: data }))
+                                                        .then(aa => {
+                                                            res.status(200).json({ success: true, data: data })
+                                                        })
                                                         .catch(err => { console.log(err); res.status(500).json({ success: false, error: err }) })
                                                 })
                                                 .catch(err => { console.log(err); res.status(500).json({ success: false, error: err }) })

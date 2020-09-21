@@ -6,6 +6,7 @@ const Schema = mongoose.Schema;
 const Inspecciones = new Schema({
     tipo:{type:String},
     date:{type:String},
+    hour:{type:String},
     id_inspector:{type:Schema.Types.ObjectId},
     propiedad:{type:Schema.Types.ObjectId},
     client:{type:Schema.Types.ObjectId},

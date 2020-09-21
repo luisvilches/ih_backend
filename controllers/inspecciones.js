@@ -81,13 +81,35 @@ exports.generatePdf = (req, res) => {
     const propiedad = JSON.parse(body.propiedad)
     const habitaciones = JSON.parse(body.habitaciones)
 
-    Inpeccion.findById({ _id: propiedad.inspeccion_actual })
+    Inpeccion.aggregate([
+        { $match: { _id: mongoose.Types.ObjectId(propiedad.inspeccion_actual) } },
+        {
+            $lookup: {
+                from: User.collection.name,
+                localField: "client",
+                foreignField: "_id",
+                as: "usuario"
+            }
+        },
+        { "$unwind": "$usuario" },
+        {
+            $lookup: {
+                from: Propiedades.collection.name,
+                localField: "propiedad",
+                foreignField: "_id",
+                as: "propiedades"
+            }
+        },
+        { "$unwind": "$propiedades" },
+    ])
         .then(response => {
+            console.log(response);
 
             let contenido = {
                 propiedad: propiedad,
                 habitaciones: habitaciones,
-                date: dateParse()
+                date: dateParse(),
+                ...response[0]
             }
 
             let options = {
@@ -96,9 +118,9 @@ exports.generatePdf = (req, res) => {
                 paginationOffset: 1,       // Override the initial pagination number
                 header: {
                     height: "90px",
-                    contents: `<div>
-                    <h1 style="font-size: 27px;letter-spacing: 0px;color: #000000;">INFORME INSPECCIÓN <br> DE PROPIEDAD</h1><svg
-                        style="float:right; margin-top:-100px" width="80" height="80" viewBox="0 0 465 468" fill="none"
+                    contents: `<div style="padding: 5px 10px;">
+                    <h1 style="font-size: 18px;letter-spacing: 0px;color: #000000;">INFORME INSPECCIÓN <br> DE PROPIEDAD</h1><svg
+                        style="float:right; margin-top:-80px" width="50" height="50" viewBox="0 0 465 468" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
                         <g clip-path="url(#clip0)">
                             <path d="M164.3 74.87H136.62V93.45H164.3V74.87Z" fill="#00A2BD" />
@@ -175,7 +197,7 @@ exports.generatePdf = (req, res) => {
                 footer: {
                     height: "60px",
                     contents: {
-                        contents: `<div style="text-align: center;">
+                        contents: `<div style="text-align: center;padding:5px 10px;">
                         <p style="text-align: center;font-size:12px;color: #9D9D9D;">Esta inspección es respaldada por Inspector Hogar -
                             www.inspectorhogar.cl</p>
                         <svg style="float:right; margin-top:-60px" width="50" height="50" viewBox="0 0 465 468" fill="none"
@@ -255,18 +277,23 @@ exports.generatePdf = (req, res) => {
                 }
             }
 
-            pdf.create(tmpPdf(contenido), options).toFile(path.join(path.resolve(), 'public', 'inspecciones', response._id + '_' + '.pdf'), (err, result) => {
+            pdf.create(tmpPdf(contenido), options).toFile(path.join(path.resolve(), 'public', 'inspecciones', response[0]._id + '_' + '.pdf'), (err, result) => {
                 if (err) {
                     { console.log(err); res.status(500).json({ success: false, err: err }) }
                 } else {
-                    response['estado'] = 'reparacion';
-                    response['ficha_inspeccion'] = 'http://' + req.headers.host + '/' + 'inspecciones/' + response._id + '_' + '.pdf'
-                    response.save()
-                        .then(async inp => {
-                            await changeStatusPropiedad(response.propiedad, "reparacion");
-                            res.status(200).json({ success: true, url: 'http://' + req.headers.host + '/' + 'inspecciones/' + response._id + '_' + '.pdf' })
+                    Inpeccion.findById({ _id: response[0]._id })
+                        .then(r => {
+                            r['estado'] = 'reparacion';
+                            r['ficha_inspeccion'] = 'http://' + req.headers.host + '/' + 'inspecciones/' + r._id + '_' + '.pdf'
+                            r.save()
+                                .then(async inp => {
+                                    await changeStatusPropiedad(r.propiedad, "reparacion");
+                                    res.status(200).json({ success: true, url: 'http://' + req.headers.host + '/' + 'inspecciones/' + r._id + '_' + '.pdf' })
+                                })
+                                .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
                         })
                         .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
+
                 }
             })
         })
@@ -294,53 +321,53 @@ function tmpPdf(data) {
             <title>Inspector hogar</title>
         </head>
     
-        <body>
+        <body style="padding: 5px 10px;">
             <div id="pageHeader"></div>
             <div>
-                <h2 style="font-size: 19px;letter-spacing: 0px;color: #000000;">PROPIETARIO</h2>
+                <h2 style="font-size: 16px;letter-spacing: 0px;color: #000000;">PROPIETARIO</h2>
                 <table>
                     <tr>
                         <td>Nombre:</td>
-                        <td>Lorem ipsum</td>
+                        <td>${data.usuario.name} ${data.usuario.lastname}</td>
                     </tr>
                     <tr>
                         <td>RUN:</td>
-                        <td>Lorem ipsum</td>
+                        <td>${data.usuario.rut}</td>
                     </tr>
                     <tr>
                         <td>Email:</td>
-                        <td>Lorem ipsum</td>
+                        <td>${data.usuario.email}/td>
                     </tr>
                     <tr>
                         <td>Teléfono:</td>
-                        <td>Lorem ipsum</td>
+                        <td${data.usuario.phone}</td>
                     </tr>
                 </table>
                 <br><br>
             </div>
             <div>
-                <h2 style="font-size: 19px;letter-spacing: 0px;color: #000000;">PROPIEDAD</h2>
+                <h2 style="font-size: 16px;letter-spacing: 0px;color: #000000;">PROPIEDAD</h2>
                 <div style="width: 48%;display: inline-block;">
                     <table>
                         <tr>
                             <td>Región:</td>
-                            <td>${data.propiedad.region}</td>
+                            <td>${data.propiedades.region}</td>
                         </tr>
                         <tr>
                             <td>Comuna:</td>
-                            <td>${data.propiedad.comuna}</td>
+                            <td>${data.propiedades.comuna}</td>
                         </tr>
                         <tr>
                             <td>Nombre Proyecto:</td>
-                            <td>${data.propiedad.proyecto}</td>
+                            <td>${data.propiedades.proyecto}</td>
                         </tr>
                         <tr>
                             <td>Edificación:</td>
-                            <td>${data.propiedad.edificacion}</td>
+                            <td>${data.propiedades.edificacion}</td>
                         </tr>
                         <tr>
                             <td>Tipo:</td>
-                            <td>Lorem ipsum</td>
+                            <td>${data.propiedades.tipo}</td>
                         </tr>
                     </table>
                 </div>
@@ -348,23 +375,23 @@ function tmpPdf(data) {
                     <table>
                         <tr>
                             <td>Lote:</td>
-                            <td>${data.propiedad.lote}</td>
+                            <td>${data.propiedades.lote}</td>
                         </tr>
                         <tr>
                             <td>Calle:</td>
-                            <td>${data.propiedad.calle}</td>
+                            <td>${data.propiedades.calle}</td>
                         </tr>
                         <tr>
                             <td>Número:</td>
-                            <td>${data.propiedad.numero}</td>
+                            <td>${data.propiedades.numero}</td>
                         </tr>
                         <tr>
                             <td>Inspección:</td>
-                            <td>Lorem ipsum</td>
+                            <td>${data.correlativo}</td>
                         </tr>
                         <tr>
                             <td>Estado propiedad:</td>
-                            <td>Lorem ipsum</td>
+                            <td>${data.propiedades.estado}</td>
                         </tr>
                     </table>
                 </div>
@@ -373,26 +400,28 @@ function tmpPdf(data) {
                 <br><br>
                 <div style="height: 2px;background: #9D9D9D;width: 100%;"></div>
                 <br>
-                <h2 style="font-size: 19px;letter-spacing: 0px;color: #000000;">ÍTEMS PARA REPARACIÓN</h2>
+                <h2 style="font-size: 18px;letter-spacing: 0px;color: #000000;">ÍTEMS PARA REPARACIÓN</h2>
                 <br>
             </div>
             ${data.habitaciones.map(hab => {
-                return `${hab.elementos.map(elem => {
-                    return `${elem.materiales.map(mat => {
-                        return `${mat.preguntas.map(pre => {
-                            if (pre.success) {
-                                return `<div>
-                                <h3 style="text-transform: uppercase;color:#00A1BB;font-size: 12px;">${elem.name}</h3>
-                                <h4 style="text-transform: uppercase;color:#000000;font-size: 12px;">${mat.name}</h4>
-                                <p style="color:#000000;font-size: 12px;font-weight: 600;">${pre.question}</p>
-                                <p style="color:#000000;font-size: 12px;">${pre.response}</p>
-                                ${pre.file != undefined ? `<img style="width: 100px;" src="data:image/png;base64,${pre.file}"alt="">` : null}
+        return `${hab.elementos.map(elem => {
+            return `${elem.materiales.map(mat => {
+                return `${mat.preguntas.map(pre => {
+                    console.log('@pre',pre)
+                    if (!pre.success) {
+                        return `<div>
+                                <h3 style="text-transform: uppercase;color:#00A1BB;font-size: 12px;margin:0;line-height:200%;">${elem.name}</h3>
+                                <h4 style="text-transform: uppercase;color:#000000;font-size: 12px;margin:0;line-height:200%;">${mat.name}</h4>
+                                <p style="color:#000000;font-size: 12px;font-weight: 600;margin:0;line-height:200%;">${pre.question}</p>
+                                <p style="color:#000000;font-size: 12px;margin:0;line-height:200%;">${pre.response}</p>
+                                ${pre.file != undefined ? `<img style="width: 100px;margin:0;" src="data:image/png;base64,${pre.file}"alt="">` : null}
+                                <div style="height: 1px;background: #9D9D9D;width: 100%;margin:10px 0;"></div>
                             </div>`
-                            }
-                        }).join('')}`
-                    }).join('')}`
+                    }
                 }).join('')}`
-            }).join('')}
+            }).join('')}`
+        }).join('')}`
+    }).join('')}
             <div id="pageFooter"></div>
             </body>
         </html>`;
