@@ -11,9 +11,10 @@ exports.auth =  (req, res) => {
             if (user.password != req.body.password) {
                 res.json({ success: false, message: 'Authentication failed. Wrong password.' });
             } else {
+                let token = createTokens(user);
                 res.json({
                     success: true,
-                    token: createTokens(user),
+                    token: token,
                     user: user
                 });
             }

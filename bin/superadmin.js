@@ -8,7 +8,7 @@ const figlet = require('figlet');
 const User = require('../models/user')
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb://ihv2:ihv2123@ds033439.mlab.com:33439/ihv2', err => {
+mongoose.connect('mongodb+srv://ihv2:ihv2123@ih.sne18.mongodb.net/<dbname>?retryWrites=true&w=majority', err => {
     if (err) console.log(err);
     else console.log('open db');
 })

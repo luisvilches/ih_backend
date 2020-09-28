@@ -3,14 +3,8 @@ const timestamps = require('mongoose-timestamp');
 const Schema = mongoose.Schema;
 
 const Planta = new Schema({
-    proyecto: { type: String },
-    idProyecto: { type: String },
-    company:{type:String},
-    region:{type:String},
-    comuna:{type:String},
-    edificacion:{type:String},
-    edificio: { type: String },
-    idedificio: { type: String },
+    proyecto: { type: Schema.Types.ObjectId, ref:'Proyectos' },
+    edificacion: { type: Schema.Types.ObjectId, ref:'Edificaciones' },
     num_planta: { type: String },
     num_departamento: { type: String },
     num_calle: { type: String },

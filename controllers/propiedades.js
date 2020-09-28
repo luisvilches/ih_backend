@@ -29,8 +29,14 @@ exports.create = async (req, res) => {
 }
 
 exports.remove = (req, res) => {
-    Propiedades.remove({ _id: req.params.id })
-        .then(response => res.status(200).json({ success: true, data: response }))
+    Propiedades.deleteOne({ _id: req.params.id })
+        .then(response => {
+            Inspecciones.deleteMany({propiedad:mongoose.Types.ObjectId(req.params.id)})
+            .then(ins => {
+                res.status(200).json({ success: true, data: response })
+            })
+            .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
+        })
         .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }
 

@@ -23,7 +23,7 @@ exports.all = (req, res) => {
 }
 
 exports.delete = (req, res) => {
-    Proyecto.remove({ _id: req.params.id })
+    Proyecto.deleteOne({ _id: req.params.id })
         .then(response => res.status(200).json({ success: true, data: response }))
         .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }

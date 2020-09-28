@@ -201,7 +201,7 @@ exports.allUserJob = (req, res) => {
 }
 
 exports.delete = (req, res) => {
-    User.remove({ _id: req.params.id })
+    User.deleteOne({ _id: req.params.id })
         .then(response => res.status(200).json({ success: true, data: response }))
         .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }
@@ -280,7 +280,7 @@ exports.allUserinspector = (req, res) => {
 }
 
 exports.delete = (req, res) => {
-    User.remove({ _id: req.params.id })
+    User.deleteOne({ _id: req.params.id })
         .then(response => res.status(200).json({ success: true, data: response }))
         .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }
@@ -640,7 +640,6 @@ exports.asignInspect = (req, res) => {
 exports.dashboard = async (req, res) => {
     let props = await Propiedades.countDocuments({ id_user: req.params.id });
     let hrs = await proxima(req.params.id, req.params.inspect)
-    let inspections = await Inpeccion.countDocuments({ client: mongoose.Types.ObjectId(req.params.id) })
-
+    let inspections = await Inpeccion.countDocuments({ client: mongoose.Types.ObjectId(req.params.id),estado:['agendado','reparacion'] })
     res.status(200).json({ success: true, data: { props, hrs: hrs.length > 0 ? hrs[1] : 0, inspections } })
 }
