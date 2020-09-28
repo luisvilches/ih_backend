@@ -2,5 +2,5 @@ const env = process.env.ENVIRONMENT || 'development';
 
 module.exports = {
     db: env === 'production' ? process.env.DB_PRODUCTION : process.env.DB_DEVELOPMENT,
-    site: "http://ih.bukitech.cl"
+    site: "https://inspector-hogar.herokuapp.com"
 }
