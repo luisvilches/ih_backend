@@ -10,6 +10,7 @@ const path = require('path')
 const utils = require('./utils');
 const { auth } = require('./middlewares/auth');
 const settings = require('./settings');
+const { env } = require('process')
 const { db } = settings;
 exports.settings = settings;
 
@@ -46,4 +47,4 @@ mongoose.connect(db, { autoIndex: false }, err => {
 })
 
 // SERVER
-server.listen(12001, err => err ? console.log(err) : console.log("server running in port " + 12001));
+server.listen(process.env.PORT || 12001, err => err ? console.log(err) : console.log("server running in port " + 12001));
