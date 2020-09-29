@@ -356,7 +356,7 @@ function tmpPdf(data) {
                 </tr>
                 <tr>
                     <th>RUN:</th>
-                    <td>${data.usuario.rut}/td>
+                    <td>${data.usuario.rut}</td>
                 </tr>
                 <tr>
                     <th>Email:</th>
@@ -432,8 +432,8 @@ function tmpPdf(data) {
                 return `${mat.preguntas.map(pre => {
                     if (pre.success) {
                         return `<div style="margin:15px 0">
-            <h4>${elem.name == undefined ? '' : elem.name}</h4>
-            <h5>${mat.name == undefined ? '' : mat.name}</h5>
+            <h4>${hab.habitacion == undefined ? '' : hab.habitacion}</h4>
+            <h5>${elem.name == undefined ? '' : elem.name}</h5>
             <p>${pre.question == undefined ? '' : pre.question}</p>
             <span>${pre.response == undefined ? '' : pre.response}</span>
             ${pre.file != undefined ? `<img src="data:image/png;base64,${pre.file}" />` : ''}
@@ -448,3 +448,9 @@ function tmpPdf(data) {
     </html> `;
 }
 
+
+
+
+
+
+// <h5>${mat.name == undefined ? '' : mat.name}</h5>
