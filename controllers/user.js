@@ -641,5 +641,5 @@ exports.dashboard = async (req, res) => {
     let props = await Propiedades.countDocuments({ id_user: req.params.id });
     let hrs = await proxima(req.params.id, req.params.inspect)
     let inspections = await Inpeccion.countDocuments({ client: mongoose.Types.ObjectId(req.params.id),estado:['agendado','agendada','reparacion'] })
-    res.status(200).json({ success: true, data: { props, hrs: hrs.length > 0 ? hrs[1] : 0, inspections } })
+    res.status(200).json({ success: true, data: { props, hrs: hrs.length > 0 ? hrs[0] : 0, inspections } })
 }
