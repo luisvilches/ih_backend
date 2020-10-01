@@ -15,7 +15,7 @@ const Propiedad = new Schema({
     escritura: [],
     incripcion: [],
     estado: { type: String, default: 'init' },
-    idPlanta: { type: String },
+    idPlanta: { type: Schema.Types.ObjectId, ref: 'Plantas' },
     recepcion_municiapal: { type: String, default: "-" },
     inspeccion_actual: { type: Schema.Types.ObjectId },
     fecha_entrega: { type: String, default: '' }

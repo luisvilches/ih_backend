@@ -1,4 +1,5 @@
 const Propiedades = require('../models/propiedades');
+const Plantas = require('../models/plantas')
 const Inspecciones = require('../models/inpecciones')
 const User = require('../models/user');
 const mongoose = require('mongoose')
@@ -15,7 +16,7 @@ exports.create = async (req, res) => {
         lote: body.lote,
         calle: body.calle,
         numero: body.numero,
-        idPlanta: body.idPlanta,
+        idPlanta: mongoose.Types.ObjectId(body.idPlanta),
         escritura: await req.tools.fileupload(req.files['escritura']),
         incripcion: await req.tools.fileupload(req.files['inscripcion']),
     })
@@ -42,7 +43,8 @@ exports.remove = (req, res) => {
 
 exports.byId = (req, res) => {
     Propiedades.findById({ _id: req.params.id })
-        .then(response => res.status(200).json({ success: true, data: response }))
+        .populate({ path: 'idPlanta', model: Plantas })
+        .then(response => {res.status(200).json({ success: true, data: response })})
         .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }
 
@@ -65,7 +67,16 @@ exports.byUser = (req, res) => {
                 foreignField: "propiedad",
                 as: "inspecciones"
             }
-        }
+        },
+        {
+            $lookup: {
+                from: Plantas.collection.name,
+                localField: "idPlanta",
+                foreignField: "_id",
+                as: "planta"
+            }
+        },
+        { "$unwind": "$planta" },
     ])
         .then(response => res.status(200).json({ success: true, data: response }))
         .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
