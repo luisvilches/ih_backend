@@ -70,7 +70,7 @@ exports.client = async (req, res) => {
         res.status(200).json({ success: false, err: { msg: 'Rut ya existe' } })
     } else if (Boolean(await User.countDocuments({ email: body.email }))) {
         res.status(200).json({ success: false, err: { msg: 'Correo ya existe' } })
-     } else {
+    } else {
         const user = new User({
             name: body.name,
             lastname: body.lastname,
@@ -160,7 +160,7 @@ exports.activarUsuario = (req, res) => {
         .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }
 
-exports.trabajador = (req, res) => {
+exports.trabajador = async (req, res) => {
     const { body } = req;
     const user = new User({
         name: body.name,
@@ -176,16 +176,15 @@ exports.trabajador = (req, res) => {
         verification: true
     })
 
-    user.save()
-        .then(response => res.status(200).json({ success: true, data: response }))
-        .catch(err => {
-            switch (err.code) {
-                case 11000:
-                    res.status(200).json({ success: false, err: err })
-                default:
-                    res.status(500).json({ success: false, err: err })
-            }
-        })
+    if (Boolean(await User.countDocuments({ rut: body.rut }))) {
+        res.status(200).json({ success: false, err: { msg: 'Rut ya existe' } })
+    } else if (Boolean(await User.countDocuments({ email: body.email }))) {
+        res.status(200).json({ success: false, err: { msg: 'Correo ya existe' } })
+    } else {
+        user.save()
+            .then(response => res.status(200).json({ success: true, data: response }))
+            .catch(err => res.status(500).json({ success: false, err: err }))
+    }
 }
 
 exports.all = (req, res) => {
@@ -465,7 +464,7 @@ exports.libresBy = (req, res) => {
             result.calendar.map(hrs => {
                 if (parseDate(hrs.date) === parseDate(req.body.date)) {
                     if (hrs.clientId == null) {
-                        console.log('@',hrs)
+                        console.log('@', hrs)
                         disponibles.push(hrs.date);
                         hrsDisponibles.push({ date: hrs.date, hrs: hrs.hours });
                     }
@@ -640,6 +639,6 @@ exports.asignInspect = (req, res) => {
 exports.dashboard = async (req, res) => {
     let props = await Propiedades.countDocuments({ id_user: req.params.id });
     let hrs = await proxima(req.params.id, req.params.inspect)
-    let inspections = await Inpeccion.countDocuments({ client: mongoose.Types.ObjectId(req.params.id),estado:['agendado','agendada','reparacion'] })
+    let inspections = await Inpeccion.countDocuments({ client: mongoose.Types.ObjectId(req.params.id), estado: ['agendado', 'agendada', 'reparacion'] })
     res.status(200).json({ success: true, data: { props, hrs: hrs.length > 0 ? hrs[0] : 0, inspections } })
 }
