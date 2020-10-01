@@ -1,4 +1,7 @@
 const Proyecto = require('../models/proyectos')
+const Edificaciones = require('../models/edificaciones')
+const Plantas = require('../models/plantas')
+const mongoose = require('mongoose')
 
 exports.nuevo = (req, res) => {
     const { body } = req;
@@ -24,7 +27,15 @@ exports.all = (req, res) => {
 
 exports.delete = (req, res) => {
     Proyecto.deleteOne({ _id: req.params.id })
-        .then(response => res.status(200).json({ success: true, data: response }))
+        .then(response => {
+            Edificaciones.deleteMany({ proyecto: mongoose.Types.ObjectId(req.params.id) })
+                .then(edi => {
+                    Plantas.deleteMany({ proyecto: mongoose.Types.ObjectId(req.params.id) })
+                        .then(pla => {
+                            res.status(200).json({ success: true, data: response })
+                        }).catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
+                }).catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
+        })
         .catch(err => { console.log(err); res.status(500).json({ success: false, err: err }) })
 }
 
