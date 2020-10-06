@@ -464,7 +464,6 @@ exports.libresBy = (req, res) => {
             result.calendar.map(hrs => {
                 if (parseDate(hrs.date) === parseDate(req.body.date)) {
                     if (hrs.clientId == null) {
-                        console.log('@', hrs)
                         disponibles.push(hrs.date);
                         hrsDisponibles.push({ date: hrs.date, hrs: hrs.hours });
                     }
@@ -524,7 +523,6 @@ exports.agendar = (req, res) => {
     const { body } = req;
     User.findById({ _id: req.params.id }, (err, result) => {
         if (err) {
-            console.log('@@@@@@@@@@', err);
             res.status(500).json({ success: false, error: err });
         } else {
             result.calendar.find((fecha) => {
