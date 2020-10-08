@@ -10,7 +10,7 @@ const config = {
     "apiKey": "6716E8F4-3097-420C-B1FC-1LC5760380DB",
     "secretKey": "1a51ca81b8174e08ee3e1e9d63c8d3802f7984c7",
     "apiURL": "https://sandbox.flow.cl/api",
-    "baseURL": site, //"http://localhost:5000",
+    "baseURL": site,
     "site": site
 }
 
@@ -51,7 +51,7 @@ exports.confirm = async (req, res) => {
                         propiedad['inspeccion_actual'] = mongoose.Types.ObjectId(doc._id);
                         propiedad.save()
                             .then(f => {
-                                res.redirect(config.site + getStatus(response.status))
+                                res.redirect(config.public_site + getStatus(response.status))
                             })
                             .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
                     })
@@ -61,7 +61,7 @@ exports.confirm = async (req, res) => {
             .catch(err => {console.log(err);res.status(500).json({ success: false, err: err })})
     } catch (error) {
         console.log(error);
-        res.redirect(config.site + getStatus(2))
+        res.redirect(config.public_site + getStatus(2))
     }
 }
 
